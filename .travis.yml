@@ -1,8 +1,6 @@
 os: linux
 language: java
-jdk:
-  - openjdk11
-before_install:
-  - chmod +x mvnw
-# services:
-# script:
+jdk: openjdk11
+services:
+  - mysql
+script: mvn clean install
