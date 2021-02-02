@@ -20,10 +20,10 @@ clean:
 	docker system prune -f
 
 javadocs:
-	sudo mvn javadoc:javadoc && rm -rf target/ && rm -rf eduamp/target/javadoc-bundle-options
+	sudo mvn javadoc:javadoc && rm -rf target/ && rm -rf cogbench/target/javadoc-bundle-options
 
 run-db:
-	docker run --name eduamp-mysql -e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_USER=user -e MYSQL_PASSWORD=my5ql -p 3306:3306 -d mysql:latest
+	docker run --name app-db -e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_USER=user -e MYSQL_PASSWORD=my5ql -p 3306:3306 -d mysql:latest
 
 stop-db:
-	docker stop eduamp-mysql && docker rm eduamp-mysql
+	docker stop app-db && docker rm app-db
