@@ -57,10 +57,10 @@ public class AdminControllerTest {
   @BeforeEach
   private void setup() {
     this.user = new MockUserClass();
-    this.user.setEmail("create-student@test.com");
+    this.user.setEmail("create-candidate@test.com");
     this.user.setPass("password");
     this.user.setName("name");
-    this.user.setRole("ROLE_STUDENT");
+    this.user.setRole("ROLE_CANDIDATE");
   }
 
   public String getPersistentUserId() {
