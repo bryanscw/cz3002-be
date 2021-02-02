@@ -26,4 +26,4 @@ run-db:
 	docker run --name app-db -e MYSQL_ROOT_PASSWORD=12345 -e MYSQL_USER=user -e MYSQL_PASSWORD=my5ql -p 3306:3306 -d mysql:latest
 
 stop-db:
-	docker stop app-db && docker rm app-dbamp-mysql && docker rm eduamp-mysql
+	docker stop app-db && docker rm app-db
