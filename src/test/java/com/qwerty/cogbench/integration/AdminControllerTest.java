@@ -93,7 +93,7 @@ public class AdminControllerTest {
 
   @Order(2)
   @Test
-  @WithUserDetails("teacher1@test.com")
+  @WithUserDetails("candidate1@test.com")
   public void should_rejectRequest_ifNotAuthorized() throws Exception {
     // Perform login
     this.mockMvc.perform(
