@@ -33,7 +33,6 @@ public class Diagnosis extends Auditable<String> {
   @OneToOne
   private Result result;
 
-  @Column
   @Getter
   @Setter
   @OneToOne
