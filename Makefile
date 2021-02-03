@@ -1,5 +1,4 @@
-all:
-	run-db test stop-db build deploy
+all:	run-db test stop-db build deploy
 
 test:
 	mvn clean install
