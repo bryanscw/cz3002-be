@@ -14,11 +14,9 @@ services:
     env_file:
       - ./app.env
     depends_on:
-      - db
+      - database
     networks:
-      eduamp_network:
-        aliases:
-          - app_be
+      app_be:
 
   database:
     container_name: app-db
@@ -29,9 +27,7 @@ services:
     env_file:
       - mysql.env
     networks:
-      eduamp_network:
-        aliases:
-          - app_be
+      app_be:
 
 networks:
   app_be:
