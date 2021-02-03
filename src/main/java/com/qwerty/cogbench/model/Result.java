@@ -31,7 +31,6 @@ public class Result extends Auditable<String> {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column
   @Getter
   @Setter
   @ManyToOne(cascade = {CascadeType.REFRESH})
