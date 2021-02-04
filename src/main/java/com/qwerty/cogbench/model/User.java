@@ -2,6 +2,7 @@ package com.qwerty.cogbench.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -40,5 +41,15 @@ public class User {
   @Getter
   @Setter
   private String name;
+
+  @Column
+  @Getter
+  @Setter
+  private Date dob;
+
+  @Column
+  @Getter
+  @Setter
+  private Gender gender;
 
 }

@@ -1,0 +1,30 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Index
+:toclevels: 4
+:sectlinks:
+
+This is the documentation of eduamp API to allow user to get list of tokens if user is authorized.
+
+=== Allow request to get list of tokens if authorized
+
+.Request sample with curl
+include::{snippets}/should_allowfetchListOfTokens_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_allowfetchListOfTokens_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_allowfetchListOfTokens_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_allowfetchListOfTokens_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_allowfetchListOfTokens_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_allowfetchListOfTokens_ifAuthorized/response-body.adoc[]

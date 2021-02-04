@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation for eduamp APIs.
+
+=== Logout if valid session
+
+.Request sample with curl
+include::{snippets}/should_logout_ifValidSession/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_logout_ifValidSession/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_logout_ifValidSession/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_logout_ifValidSession/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_logout_ifValidSession/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_logout_ifValidSession/response-body.adoc[]
