@@ -7,9 +7,9 @@
 :toclevels: 4
 :sectlinks:
 
-This is the documentation of eduamp API to get reject request for list of tokens in db if admin is not authorized.
+This is the documentation of cogbench API to get reject request for list of tokens in db if admin is not authorized.
 
-=== Reject request to get list of tokens if not authorized
+== Reject request to get list of tokens if not authorized
 
 .Request sample with curl
 include::{snippets}/should_rejectRequest_ifNotAuthorized/curl-request.adoc[]
