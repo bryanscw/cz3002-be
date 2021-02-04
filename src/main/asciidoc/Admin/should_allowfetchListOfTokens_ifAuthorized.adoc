@@ -7,9 +7,9 @@
 :toclevels: 4
 :sectlinks:
 
-This is the documentation of eduamp API to allow user to get list of tokens if user is authorized.
+This is the documentation of cogbench API to allow user to get list of tokens if user is authorized.
 
-=== Allow request to get list of tokens if authorized
+== Allow request to get list of tokens if authorized
 
 .Request sample with curl
 include::{snippets}/should_allowfetchListOfTokens_ifAuthorized/curl-request.adoc[]
