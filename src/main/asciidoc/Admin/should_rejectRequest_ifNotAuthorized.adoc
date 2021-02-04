@@ -1,0 +1,30 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Index
+:toclevels: 4
+:sectlinks:
+
+This is the documentation of eduamp API to get reject request for list of tokens in db if admin is not authorized.
+
+=== Reject request to get list of tokens if not authorized
+
+.Request sample with curl
+include::{snippets}/should_rejectRequest_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_rejectRequest_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_rejectRequest_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_rejectRequest_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_rejectRequest_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_rejectRequest_ifNotAuthorized/response-body.adoc[]
