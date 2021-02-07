@@ -30,6 +30,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -120,11 +121,11 @@ public class UserControllerTest {
 
   @Order(4)
   @Test
-  @WithUserDetails("candidate1@test.com")
   public void should_notGetUser_ifNotAuthorized() throws Exception {
     mockMvc.perform(
             MockMvcRequestBuilders.post("/users/me")
-                    .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(user("candidate1@test.com")))
             .andExpect(status().isNotFound())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
@@ -168,18 +169,18 @@ public class UserControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
-//  @Order(6)
-//  @Test
-//  @WithUserDetails("candidate2@test.com")
-//  public void should_notGetUser_ifNotExist() throws Exception {
-//    mockMvc.perform(
-//            MockMvcRequestBuilders.post("/users/me")
-//                    .contentType(MediaType.APPLICATION_JSON))
-//            .andExpect(status().isNotFound())
-//            .andDo(document("{methodName}",
-//                    preprocessRequest(prettyPrint()),
-//                    preprocessResponse(prettyPrint())));
-//  }
+  @Order(6)
+  @Test
+  public void should_notGetUser_ifNotExist() throws Exception {
+    mockMvc.perform(
+            MockMvcRequestBuilders.post("/users/me")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(user("candidate2@test.com")))
+            .andExpect(status().isNotFound())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+  }
 
   @Order(7)
   @Test
