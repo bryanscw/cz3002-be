@@ -1,9 +1,6 @@
 package com.qwerty.cogbench.controller;
 
-import com.qwerty.cogbench.exception.ResourceNotFoundException;
-import com.qwerty.cogbench.exception.UnauthorizedException;
 import com.qwerty.cogbench.model.Result;
-import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.service.ResultService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
