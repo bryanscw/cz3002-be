@@ -35,7 +35,6 @@ public class ResultServiceImpl implements ResultService {
         // Check if user is authorized to perform action
         this.isAuthorized(userEmail, authentication);
 
-        // Find the referenced User and GameMap
         User userToFind = userRepository.findUserByEmail(userEmail).orElseThrow(() -> {
             String errorMsg = String.format("User with email [%s] not found", userEmail);
             log.error(errorMsg);
@@ -68,8 +67,6 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public boolean delete(String userEmail, Integer resultId, Authentication authentication) {
-        // Check if user is authorized to perform action
-        this.isAuthorized(userEmail, authentication);
 
         Result resultToFind = resultRepository
                 .findResultById(resultId)

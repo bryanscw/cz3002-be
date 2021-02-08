@@ -341,8 +341,8 @@ public class ResultControllerTest {
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                     .header(HttpHeaders.AUTHORIZATION,
                             "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.user.getEmail())
-                    .param("password", this.user.getPass())
+                    .param("username", this.doctor.getEmail())
+                    .param("password", this.doctor.getPass())
                     .param("grant_type", "password"))
             .andExpect(status().isOk())
             .andReturn();
@@ -370,7 +370,6 @@ public class ResultControllerTest {
 
   @Order(11)
   @Test
-  @WithUserDetails("candidate1@test.com")
   public void should_notAllowDeleteResult_ifNotExist() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
@@ -378,8 +377,8 @@ public class ResultControllerTest {
                     .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                     .header(HttpHeaders.AUTHORIZATION,
                             "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.user.getEmail())
-                    .param("password", this.user.getPass())
+                    .param("username", this.doctor.getEmail())
+                    .param("password", this.doctor.getPass())
                     .param("grant_type", "password"))
             .andExpect(status().isOk())
             .andReturn();
