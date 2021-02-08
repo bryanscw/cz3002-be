@@ -109,6 +109,7 @@ public class ResultController {
             @PathVariable(value = "resultId") Integer resultId,
             Authentication authentication) {
         log.info("Deleting result with id [{}] for user [{}]", resultId, userEmail);
+
         return resultService.delete(userEmail, resultId, authentication);
     }
 
