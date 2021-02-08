@@ -100,10 +100,9 @@ public class ResultServiceImpl implements ResultService {
         String principalName = ((org.springframework.security.core.userdetails.User) authentication
                 .getPrincipal()).getUsername();
 
-        // User is only allowed to submit answers for themselves
         if (!userEmail.equals(principalName)) {
             String errorMsg = String.format(
-                    "User with userEmail: [%s] is not allowed to submit answers for user with userEmail: [%s]",
+                    "User with userEmail: [%s] is not allowed to modify resources for user with userEmail: [%s]",
                     principalName, userEmail);
             throw new UnauthorizedException(errorMsg);
         }
