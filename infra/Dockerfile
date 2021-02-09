@@ -9,4 +9,4 @@ WORKDIR /root/app
 
 ADD . .
 
-CMD sleep 10 && java -jar /root/app/src/target/cogbench-0.0.1-SNAPSHOT.jar
+CMD sleep 10 && java -jar /root/app/target/cogbench-0.0.1-SNAPSHOT.jar
