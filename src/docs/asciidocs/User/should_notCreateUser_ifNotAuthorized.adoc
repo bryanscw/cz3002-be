@@ -1,0 +1,30 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Index
+:toclevels: 4
+:sectlinks:
+
+This is the documentation of cogbench API to reject user creation if credentials are invalid.
+
+== Reject create user if not authorized
+
+.Request sample with curl
+include::{snippets}/should_notCreateUser_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateUser_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateUser_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateUser_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateUser_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateUser_ifNotAuthorized/response-body.adoc[]

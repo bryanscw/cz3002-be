@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to allow fetching user if user exists and credentials are valid.
+
+== Allow fetch user if user exists and credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_getUser_ifExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_getUser_ifExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_getUser_ifExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_getUser_ifExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_getUser_ifExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_getUser_ifExist/response-body.adoc[]
