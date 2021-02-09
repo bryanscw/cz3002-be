@@ -382,6 +382,42 @@ public class DiagnosisControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
+  @Order(8)
+  @Test
+  public void should_notAllowDeleteDiagnosis_ifNotExist() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post("/oauth/token")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.doctor.getEmail())
+                    .param("password", this.doctor.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(
+                    String.format("/diagnosis/%s/delete/%s",
+                            this.user.getEmail(),
+                            "1"))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken))
+            .andExpect(status().isNotFound())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete("/oauth/revoke")
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+  }
+
   @Order(9997)
   @Test
   public void cleanUpContext1() throws Exception {
