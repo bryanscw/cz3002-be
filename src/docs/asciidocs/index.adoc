@@ -139,3 +139,667 @@ include::{snippets}/should_rejectRequest_ifNotAuthorized/request-body.adoc[]
 include::{snippets}/should_rejectRequest_ifNotAuthorized/response-body.adoc[]
 
 == User
+
+=== Reject create user if not authorized
+
+.Request sample with curl
+include::{snippets}/should_notCreateUser_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateUser_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateUser_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateUser_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateUser_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateUser_ifNotAuthorized/response-body.adoc[]
+
+=== Allow create user if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_createUser_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_createUser_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_createUser_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_createUser_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_createUser_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_createUser_ifAuthorized/response-body.adoc[]
+
+=== Reject user if user is already created
+
+.Request sample with curl
+include::{snippets}/should_notCreateUser_ifExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateUser_ifExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateUser_ifExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateUser_ifExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateUser_ifExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateUser_ifExist/response-body.adoc[]
+
+=== Reject fetch user if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetUser_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetUser_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetUser_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetUser_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetUser_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetUser_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch user if user exists and credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_getUser_ifExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_getUser_ifExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_getUser_ifExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_getUser_ifExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_getUser_ifExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_getUser_ifExist/response-body.adoc[]
+
+=== Reject fetch user if user does not exist
+
+.Request sample with curl
+include::{snippets}/should_notGetUser_ifNotExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetUser_ifNotExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetUser_ifNotExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetUser_ifNotExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetUser_ifNotExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetUser_ifNotExist/response-body.adoc[]
+
+=== Allow fetch all users if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_allowFetchAllUser_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_allowFetchAllUser_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_allowFetchAllUser_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_allowFetchAllUser_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_allowFetchAllUser_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_allowFetchAllUser_ifAuthorized/response-body.adoc[]
+
+=== Reject fetch all users if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notAllowFetchAllUser_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowFetchAllUser_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowFetchAllUser_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowFetchAllUser_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowFetchAllUser_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowFetchAllUser_ifNotAuthorized/response-body.adoc[]
+
+=== Reject update user if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/response-body.adoc[]
+
+=== Allow update user if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_allowUpdateUser_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_allowUpdateUser_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_allowUpdateUser_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_allowUpdateUser_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_allowUpdateUser_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_allowUpdateUser_ifAuthorized/response-body.adoc[]
+
+=== Reject update user if user does not exist
+
+.Request sample with curl
+include::{snippets}/should_notAllowUpdateUser_ifNotExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowUpdateUser_ifNotExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowUpdateUser_ifNotExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowUpdateUser_ifNotExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowUpdateUser_ifNotExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowUpdateUser_ifNotExist/response-body.adoc[]
+
+=== Reject delete user if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notAllowDeleteUser_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowDeleteUser_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowDeleteUser_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowDeleteUser_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowDeleteUser_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowDeleteUser_ifNotAuthorized/response-body.adoc[]
+
+=== Allow delete user if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_allowDeleteUser_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_allowDeleteUser_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_allowDeleteUser_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_allowDeleteUser_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_allowDeleteUser_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_allowDeleteUser_ifAuthorized/response-body.adoc[]
+
+=== Reject delete user if user does not exist
+
+.Request sample with curl
+include::{snippets}/should_notAllowDeleteUser_ifNotExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowDeleteUser_ifNotExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowDeleteUser_ifNotExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowDeleteUser_ifNotExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowDeleteUser_ifNotExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowDeleteUser_ifNotExist/response-body.adoc[]
+
+== Result
+
+=== Reject create result if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notCreateResult_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateResult_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateResult_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateResult_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateResult_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateResult_ifNotAuthorized/response-body.adoc[]
+
+=== Allow create result if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_createResult_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_createResult_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_createResult_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_createResult_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_createResult_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_createResult_ifAuthorized/response-body.adoc[]
+
+=== Reject fetch latest result if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetLatestUserResult_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetLatestUserResult_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetLatestUserResult_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetLatestUserResult_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetLatestUserResult_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetLatestUserResult_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch latest result if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_getLatestUserResult_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_getLatestUserResult_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_getLatestUserResult_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_getLatestUserResult_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_getLatestUserResult_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_getLatestUserResult_ifAuthorized/response-body.adoc[]
+
+=== Reject fetch all user result if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetAllUserResult_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetAllUserResult_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetAllUserResult_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetAllUserResult_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetAllUserResult_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetAllUserResult_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch all user result if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_getAllUserResult_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_getAllUserResult_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_getAllUserResult_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_getAllUserResult_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_getAllUserResult_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_getAllUserResult_ifAuthorized/response-body.adoc[]
+
+=== Reject fetch all result if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notAllowFetchAllResult_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowFetchAllResult_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowFetchAllResult_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowFetchAllResult_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowFetchAllResult_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowFetchAllResult_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch all result if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_allowFetchAllResult_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_allowFetchAllResult_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_allowFetchAllResult_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_allowFetchAllResult_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_allowFetchAllResult_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_allowFetchAllResult_ifAuthorized/response-body.adoc[]
+
+=== Reject delete result if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notAllowDeleteResult_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowDeleteResult_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowDeleteResult_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowDeleteResult_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowDeleteResult_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowDeleteResult_ifNotAuthorized/response-body.adoc[]
+
+=== Allow delete result if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_allowDeleteResult_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_allowDeleteResult_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_allowDeleteResult_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_allowDeleteResult_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_allowDeleteResult_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_allowDeleteResult_ifAuthorized/response-body.adoc[]
+
+=== Reject delete result if result does not exist
+
+.Request sample with curl
+include::{snippets}/should_notAllowDeleteResult_ifNotExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowDeleteResult_ifNotExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowDeleteResult_ifNotExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowDeleteResult_ifNotExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowDeleteResult_ifNotExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowDeleteResult_ifNotExist/response-body.adoc[]
+
+== Diagnosis
+
+=== Reject create diagnosis if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notCreateDiagnosis_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateDiagnosis_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateDiagnosis_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateDiagnosis_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateDiagnosis_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateDiagnosis_ifNotAuthorized/response-body.adoc[]
+
+=== Allow create diagnosis if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_createDiagnosis_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_createDiagnosis_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_createDiagnosis_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_createDiagnosis_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_createDiagnosis_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_createDiagnosis_ifAuthorized/response-body.adoc[]
+
+=== Reject create diagnosis if diagnosis already exists
+
+.Request sample with curl
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/response-body.adoc[]
+
+=== Reject update diagnosis if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notAllowUpdateDiagnosis_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowUpdateDiagnosis_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowUpdateDiagnosis_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowUpdateDiagnosis_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowUpdateDiagnosis_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowUpdateDiagnosis_ifNotAuthorized/response-body.adoc[]
+
+=== Allow update diagnosis if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_allowUpdateDiagnosis_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_allowUpdateDiagnosis_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_allowUpdateDiagnosis_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_allowUpdateDiagnosis_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_allowUpdateDiagnosis_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_allowUpdateDiagnosis_ifAuthorized/response-body.adoc[]
+
+=== Reject delete diagnosis if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotAuthorized/response-body.adoc[]
+
+=== Allow delete diagnosis if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_allowDeleteDiagnosis_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_allowDeleteDiagnosis_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_allowDeleteDiagnosis_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_allowDeleteDiagnosis_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_allowDeleteDiagnosis_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_allowDeleteDiagnosis_ifAuthorized/response-body.adoc[]
+
+=== Reject delete diagnosis if diagnosis does not exist
+
+.Request sample with curl
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/response-body.adoc[]
