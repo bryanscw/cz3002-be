@@ -1,0 +1,30 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Index
+:toclevels: 4
+:sectlinks:
+
+This is the documentation of cogbench API to reject user creation if user is already created.
+
+== Reject user if user is already created
+
+.Request sample with curl
+include::{snippets}/should_notCreateUser_ifExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateUser_ifExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateUser_ifExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateUser_ifExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateUser_ifExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateUser_ifExist/response-body.adoc[]

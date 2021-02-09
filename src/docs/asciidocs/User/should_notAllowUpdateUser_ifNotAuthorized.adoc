@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to reject updating user if credentials are invalid.
+
+== Reject update user if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowUpdateUser_ifNotAuthorized/response-body.adoc[]

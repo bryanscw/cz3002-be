@@ -7,7 +7,7 @@ build:
 	cd infra && docker-compose build
 
 deploy:
-	cd infra && docker-compose up -d
+	sudo chmod 777 target/* && cd infra && docker-compose up -d
 
 stop:
 	cd infra && docker-compose down

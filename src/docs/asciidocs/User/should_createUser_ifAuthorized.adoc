@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to allow user creation if credentials are valid.
+
+== Allow create user if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_createUser_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_createUser_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_createUser_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_createUser_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_createUser_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_createUser_ifAuthorized/response-body.adoc[]
