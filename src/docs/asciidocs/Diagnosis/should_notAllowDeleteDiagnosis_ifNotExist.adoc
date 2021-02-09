@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to reject deleting diagnosis if diagnosis does not exist.
+
+== Reject delete diagnosis if diagnosis does not exist
+
+.Request sample with curl
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notAllowDeleteDiagnosis_ifNotExist/response-body.adoc[]

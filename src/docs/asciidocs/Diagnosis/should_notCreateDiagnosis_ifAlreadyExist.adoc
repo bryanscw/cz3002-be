@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to reject creating diagnosis if diagnosis already exists.
+
+== Reject create diagnosis if diagnosis already exists
+
+.Request sample with curl
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateDiagnosis_ifAlreadyExist/response-body.adoc[]
