@@ -1,9 +1,6 @@
 package com.qwerty.cogbench.controller;
 
-import com.qwerty.cogbench.exception.ResourceNotFoundException;
-import com.qwerty.cogbench.exception.UnauthorizedException;
 import com.qwerty.cogbench.model.Result;
-import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.service.ResultService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -13,8 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -108,12 +103,13 @@ public class ResultController {
      */
     @RequestMapping(method = RequestMethod.DELETE, path = "/{userEmail}/delete/{resultId}")
     @ResponseStatus(HttpStatus.OK)
-    @Secured({"ROLE_CANDIDATE"})
-    public boolean deleteUser(
+    @Secured({"ROLE_DOCTOR"})
+    public boolean deleteResult(
             @PathVariable(value = "userEmail") String userEmail,
             @PathVariable(value = "resultId") Integer resultId,
             Authentication authentication) {
-        log.info("Deleting result [{}] for user [{}]", resultId, userEmail);
+        log.info("Deleting result with id [{}] for user [{}]", resultId, userEmail);
+
         return resultService.delete(userEmail, resultId, authentication);
     }
 

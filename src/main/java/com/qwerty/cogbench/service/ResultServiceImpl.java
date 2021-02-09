@@ -35,7 +35,6 @@ public class ResultServiceImpl implements ResultService {
         // Check if user is authorized to perform action
         this.isAuthorized(userEmail, authentication);
 
-        // Find the referenced User and GameMap
         User userToFind = userRepository.findUserByEmail(userEmail).orElseThrow(() -> {
             String errorMsg = String.format("User with email [%s] not found", userEmail);
             log.error(errorMsg);
@@ -68,8 +67,6 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public boolean delete(String userEmail, Integer resultId, Authentication authentication) {
-        // Check if user is authorized to perform action
-        this.isAuthorized(userEmail, authentication);
 
         Result resultToFind = resultRepository
                 .findResultById(resultId)
@@ -100,10 +97,9 @@ public class ResultServiceImpl implements ResultService {
         String principalName = ((org.springframework.security.core.userdetails.User) authentication
                 .getPrincipal()).getUsername();
 
-        // User is only allowed to submit answers for themselves
         if (!userEmail.equals(principalName)) {
             String errorMsg = String.format(
-                    "User with userEmail: [%s] is not allowed to submit answers for user with userEmail: [%s]",
+                    "User with userEmail: [%s] is not allowed to modify resources for user with userEmail: [%s]",
                     principalName, userEmail);
             throw new UnauthorizedException(errorMsg);
         }
