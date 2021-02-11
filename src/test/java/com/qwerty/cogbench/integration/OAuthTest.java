@@ -37,9 +37,13 @@ import org.springframework.util.Base64Utils;
     classes = MockUserConfigs.class
 )
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(
+    uriHost = "172.21.148.165"
+)
 @ActiveProfiles("test")
 public class OAuthTest {
+
+  private static final String CONTEXT_PATH = "/cogbench/api";
 
   @Autowired
   private MockMvc mockMvc;
@@ -62,14 +66,14 @@ public class OAuthTest {
     // Create user
     String userJson = new ObjectMapper().writeValueAsString(this.user);
     mockMvc.perform(
-        MockMvcRequestBuilders.post("/users/create")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/users/create").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(userJson))
         .andExpect(status().isOk());
 
     // Perform login
     mockMvc.perform(
-        MockMvcRequestBuilders.post("/oauth/token")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
@@ -87,7 +91,7 @@ public class OAuthTest {
   public void should_reject_ifInvalidCredentials() throws Exception {
     // Perform login
     mockMvc.perform(
-        MockMvcRequestBuilders.post("/oauth/token")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
@@ -108,13 +112,13 @@ public class OAuthTest {
     // Create user
     String userJson = new ObjectMapper().writeValueAsString(this.user);
     mockMvc.perform(
-        MockMvcRequestBuilders.post("/users/create")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/users/create").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(userJson))
         .andExpect(status().isOk());
 
     MvcResult initialMvcResult = mockMvc.perform(
-        MockMvcRequestBuilders.post("/oauth/token")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
@@ -131,7 +135,9 @@ public class OAuthTest {
         .read(initialMvcResult.getResponse().getContentAsString(), "$.refresh_token");
 
     MvcResult finalMvcResult = mockMvc.perform(
-        MockMvcRequestBuilders.post(String.format("/oauth/token?grant_type=refresh_token&refresh_token=%s", refreshToken))
+        MockMvcRequestBuilders.post(CONTEXT_PATH + String
+            .format("/oauth/token?grant_type=refresh_token&refresh_token=%s", refreshToken))
+            .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes())))
@@ -154,14 +160,14 @@ public class OAuthTest {
     // Create user
     String userJson = new ObjectMapper().writeValueAsString(this.user);
     mockMvc.perform(
-        MockMvcRequestBuilders.post("/users/create")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/users/create").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(userJson))
         .andExpect(status().isOk());
 
     // Perform login
     MvcResult mvcResult = mockMvc.perform(
-        MockMvcRequestBuilders.post("/oauth/token")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
@@ -177,7 +183,7 @@ public class OAuthTest {
 
     // Perform logout
     mockMvc.perform(
-        MockMvcRequestBuilders.delete("/oauth/revoke")
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
@@ -190,7 +196,7 @@ public class OAuthTest {
   public void should_throwError_ifInvalidSession() throws Exception {
     // Perform logout
     mockMvc.perform(
-        MockMvcRequestBuilders.delete("/oauth/revoke")
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer invalidToken"))
         .andExpect(status().isUnauthorized())

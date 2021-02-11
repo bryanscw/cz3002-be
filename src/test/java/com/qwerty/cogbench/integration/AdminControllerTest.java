@@ -41,10 +41,14 @@ import org.springframework.util.Base64Utils;
     classes = MockUserConfigs.class
 )
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(
+    uriHost = "172.21.148.165"
+)
 @TestMethodOrder(OrderAnnotation.class)
 @ActiveProfiles("test")
 public class AdminControllerTest {
+
+  private static final String CONTEXT_PATH = "/cogbench/api";
 
   @Autowired
   private MockMvc mockMvc;
@@ -75,13 +79,13 @@ public class AdminControllerTest {
     // Create user
     String userJson = new ObjectMapper().writeValueAsString(this.user);
     mockMvc.perform(
-        MockMvcRequestBuilders.post("/users/create")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/users/create").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(userJson))
         .andExpect(status().isOk());
 
     mockMvc.perform(
-        MockMvcRequestBuilders.post("/oauth/token")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
@@ -97,7 +101,7 @@ public class AdminControllerTest {
   public void should_rejectRequest_ifNotAuthorized() throws Exception {
     // Perform login
     this.mockMvc.perform(
-        MockMvcRequestBuilders.get("/admin/token/list")
+        MockMvcRequestBuilders.get(CONTEXT_PATH + "/admin/token/list").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE))
         .andExpect(status().isForbidden())
         .andDo(document("{methodName}",
@@ -111,7 +115,7 @@ public class AdminControllerTest {
   public void should_allowfetchListOfTokens_ifAuthorized() throws Exception {
 
     this.mockMvc.perform(
-        MockMvcRequestBuilders.get("/admin/token/list")
+        MockMvcRequestBuilders.get(CONTEXT_PATH + "/admin/token/list").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$", hasSize(1)))
@@ -126,7 +130,7 @@ public class AdminControllerTest {
 
     // Perform login
     MvcResult mvcResult = mockMvc.perform(
-        MockMvcRequestBuilders.post("/oauth/token")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
@@ -139,7 +143,7 @@ public class AdminControllerTest {
         .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-        MockMvcRequestBuilders.delete("/oauth/revoke")
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken));
 

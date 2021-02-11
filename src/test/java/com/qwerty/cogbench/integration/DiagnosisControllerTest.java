@@ -1,5 +1,11 @@
 package com.qwerty.cogbench.integration;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.qwerty.cogbench.mock.MockUserClass;
@@ -27,13 +33,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
-
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(SpringExtension.class)
@@ -42,10 +42,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     classes = MockUserConfigs.class
 )
 @AutoConfigureMockMvc
-@AutoConfigureRestDocs
+@AutoConfigureRestDocs(
+    uriHost = "172.21.148.165"
+)
 @TestMethodOrder(OrderAnnotation.class)
 @ActiveProfiles("test")
 public class DiagnosisControllerTest {
+
+  private static final String CONTEXT_PATH = "/cogbench/api";
 
   @Autowired
   private MockMvc mockMvc;
@@ -109,10 +113,10 @@ public class DiagnosisControllerTest {
     String userJson = new ObjectMapper().writeValueAsString(this.user);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/create")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(userJson))
-            .andExpect(status().isOk());
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/users/create").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(userJson))
+        .andExpect(status().isOk());
 
   }
 
@@ -125,10 +129,10 @@ public class DiagnosisControllerTest {
     String doctorJson = new ObjectMapper().writeValueAsString(this.doctor);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post("/users/create")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(doctorJson))
-            .andExpect(status().isOk());
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/users/create").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(doctorJson))
+        .andExpect(status().isOk());
 
   }
 
@@ -138,32 +142,34 @@ public class DiagnosisControllerTest {
 
     // Create result
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post("/oauth/token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.user.getEmail())
-                    .param("password", this.user.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.user.getEmail())
+            .param("password", this.user.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     String resultJson = new ObjectMapper().writeValueAsString(this.result);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(String.format("/result/%s/create", this.user.getEmail()))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .content(resultJson))
-            .andExpect(status().isOk());
+        MockMvcRequestBuilders
+            .post(CONTEXT_PATH + String.format("/result/%s/create", this.user.getEmail()))
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken)
+            .content(resultJson))
+        .andExpect(status().isOk());
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/oauth/revoke")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
 
   }
 
@@ -174,16 +180,16 @@ public class DiagnosisControllerTest {
     String diagnosisJson = new ObjectMapper().writeValueAsString(this.diagnosis);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    String.format("/diagnosis/%s/create/%s",
-                            this.user.getEmail(),
-                            getPersistentResult().getId()))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(diagnosisJson))
-            .andExpect(status().isUnauthorized())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            CONTEXT_PATH + String.format("/diagnosis/%s/create/%s",
+                this.user.getEmail(),
+                getPersistentResult().getId())).contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(diagnosisJson))
+        .andExpect(status().isUnauthorized())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
   }
 
@@ -192,38 +198,38 @@ public class DiagnosisControllerTest {
   public void should_createDiagnosis_ifAuthorized() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post("/oauth/token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     String diagnosisJson = new ObjectMapper().writeValueAsString(this.diagnosis);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    String.format("/diagnosis/%s/create/%s",
-                            this.user.getEmail(),
-                            getPersistentResult().getId()))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .content(diagnosisJson))
-            .andExpect(status().isOk())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            CONTEXT_PATH + String.format("/diagnosis/%s/create/%s",
+                this.user.getEmail(),
+                getPersistentResult().getId())).contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken)
+            .content(diagnosisJson))
+        .andExpect(status().isOk())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/oauth/revoke")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
 
   }
 
@@ -232,38 +238,38 @@ public class DiagnosisControllerTest {
   public void should_notCreateDiagnosis_ifAlreadyExist() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post("/oauth/token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     String diagnosisJson = new ObjectMapper().writeValueAsString(this.diagnosis);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    String.format("/diagnosis/%s/create/%s",
-                            this.user.getEmail(),
-                            getPersistentResult().getId()))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .content(diagnosisJson))
-            .andExpect(status().isBadRequest())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            CONTEXT_PATH + String.format("/diagnosis/%s/create/%s",
+                this.user.getEmail(),
+                getPersistentResult().getId())).contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken)
+            .content(diagnosisJson))
+        .andExpect(status().isBadRequest())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/oauth/revoke")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
 
   }
 
@@ -277,16 +283,16 @@ public class DiagnosisControllerTest {
     String diagnosisJson = new ObjectMapper().writeValueAsString(this.diagnosis);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    String.format("/diagnosis/%s/update/%s",
-                            this.user.getEmail(),
-                            getPersistentResult().getId()))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(diagnosisJson))
-            .andExpect(status().isUnauthorized())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            CONTEXT_PATH + String.format("/diagnosis/%s/update/%s",
+                this.user.getEmail(),
+                getPersistentResult().getId())).contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(diagnosisJson))
+        .andExpect(status().isUnauthorized())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
   }
 
   @Order(5)
@@ -299,51 +305,51 @@ public class DiagnosisControllerTest {
     String diagnosisJson = new ObjectMapper().writeValueAsString(this.diagnosis);
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post("/oauth/token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    String.format("/diagnosis/%s/update/%s",
-                            this.user.getEmail(),
-                            getPersistentResult().getId()))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(diagnosisJson)
-                    .header("Authorization", "Bearer " + accessToken))
-            .andExpect(status().isOk())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            CONTEXT_PATH + String.format("/diagnosis/%s/update/%s",
+                this.user.getEmail(),
+                getPersistentResult().getId())).contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(diagnosisJson)
+            .header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isOk())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/oauth/revoke")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(6)
   @Test
   public void should_notAllowDeleteDiagnosis_ifNotAuthorized() throws Exception {
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(
-                    String.format("/diagnosis/%s/delete/%s",
-                            this.user.getEmail(),
-                            getPersistentDiagnosis().getId()))
-                    .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isUnauthorized())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.delete(
+            CONTEXT_PATH + String.format("/diagnosis/%s/delete/%s",
+                this.user.getEmail(),
+                getPersistentDiagnosis().getId())).contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isUnauthorized())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
   }
 
   @Order(7)
@@ -351,35 +357,35 @@ public class DiagnosisControllerTest {
   public void should_allowDeleteDiagnosis_ifAuthorized() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post("/oauth/token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(
-                    String.format("/diagnosis/%s/delete/%s",
-                            this.user.getEmail(),
-                            getPersistentDiagnosis().getId()))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken))
-            .andExpect(status().isOk())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.delete(
+            CONTEXT_PATH + String.format("/diagnosis/%s/delete/%s",
+                this.user.getEmail(),
+                getPersistentDiagnosis().getId())).contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isOk())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/oauth/revoke")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(8)
@@ -423,32 +429,32 @@ public class DiagnosisControllerTest {
   public void cleanUpContext1() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post("/oauth/token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     this.mockMvc.perform(
-            MockMvcRequestBuilders.delete(
-                    String.format("/result/%s/delete/%s",
-                            this.user.getEmail(),
-                            getPersistentResult().getId()))
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header("Authorization", "Bearer " + accessToken))
-            .andExpect(status().isOk());
+        MockMvcRequestBuilders.delete(
+            CONTEXT_PATH + String.format("/result/%s/delete/%s",
+                this.user.getEmail(),
+                getPersistentResult().getId())).contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isOk());
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/oauth/revoke")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(9998)
@@ -457,9 +463,10 @@ public class DiagnosisControllerTest {
   public void cleanUpContext2() throws Exception {
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/users/" + this.user.getEmail())
-                    .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/users/" + this.user.getEmail())
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
   }
 
   @Order(9999)
@@ -468,9 +475,9 @@ public class DiagnosisControllerTest {
   public void cleanUpContext3() throws Exception {
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/users/" + this.doctor.getEmail())
-                    .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/users/" + this.doctor.getEmail())
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
   }
 }
-
