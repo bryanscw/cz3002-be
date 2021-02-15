@@ -1,5 +1,7 @@
 package com.qwerty.cogbench.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -56,10 +58,10 @@ public class ResultControllerTest {
   @Autowired
   private ResultRepository resultRepository;
 
-  private Result result;
-
   @Autowired
   private UserRepository userRepository;
+
+  private Result result;
 
   private MockUserClass user;
 
@@ -177,6 +179,11 @@ public class ResultControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken));
 
+    // Check if data in `Result` object is persisted into the database
+    Result persistemtResult = getPersistentResult();
+    assertEquals(this.result.getAccuracy(), persistemtResult.getAccuracy());
+    assertEquals(this.result.getTime(), persistemtResult.getTime());
+    assertNotNull(persistemtResult.getId());
   }
 
   @Order(4)
@@ -191,7 +198,9 @@ public class ResultControllerTest {
         .andExpect(status().isUnauthorized())
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
-            preprocessResponse(prettyPrint())));
+            preprocessResponse(prettyPrint())
+            )
+        );
   }
 
   @Order(5)

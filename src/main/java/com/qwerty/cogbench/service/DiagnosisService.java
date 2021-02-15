@@ -5,10 +5,12 @@ import org.springframework.security.core.Authentication;
 
 public interface DiagnosisService {
 
-    Diagnosis create(String userEmail, Integer resultId, Diagnosis diagnosis, Authentication authentication);
+  Diagnosis create(String userEmail, Integer resultId, Diagnosis diagnosis,
+      Authentication authentication);
 
-    Diagnosis update(String userEmail, Integer resultId, Diagnosis diagnosis, Authentication authentication);
+  Diagnosis update(String userEmail, Integer resultId, Diagnosis diagnosis,
+      Authentication authentication);
 
-    boolean delete(String userEmail, Integer diagnosisId, Authentication authentication);
+  boolean delete(String userEmail, Integer diagnosisId, Authentication authentication);
 
 }
