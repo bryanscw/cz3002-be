@@ -2,6 +2,7 @@ package com.qwerty.cogbench.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -29,7 +30,6 @@ public class Result extends Auditable<String> {
   @Setter
   @ManyToOne(cascade = {CascadeType.REFRESH})
   @JoinColumn(name = "user_id", nullable = false)
-  @JsonIdentityReference(alwaysAsId = true)
   private User user;
 
   @Getter
