@@ -1,5 +1,7 @@
 package com.qwerty.cogbench.integration;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -231,6 +233,11 @@ public class DiagnosisControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken));
 
+    // Check if data in `Diagnosis` object is persisted into the database
+    Diagnosis persistentDiagnosis = getPersistentDiagnosis();
+    assertEquals(this.diagnosis.getDescription(), persistentDiagnosis.getDescription());
+    assertEquals(this.diagnosis.getLabel(), persistentDiagnosis.getLabel());
+    assertNotNull(persistentDiagnosis.getId());
   }
 
   @Order(3)
@@ -393,35 +400,35 @@ public class DiagnosisControllerTest {
   public void should_notAllowDeleteDiagnosis_ifNotExist() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post("/oauth/token")
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post("/oauth/token")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(
-                    String.format("/diagnosis/%s/delete/%s",
-                            this.user.getEmail(),
-                            "1"))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken))
-            .andExpect(status().isNotFound())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.delete(
+            String.format("/diagnosis/%s/delete/%s",
+                this.user.getEmail(),
+                "1"))
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isNotFound())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete("/oauth/revoke")
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete("/oauth/revoke")
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(9997)
