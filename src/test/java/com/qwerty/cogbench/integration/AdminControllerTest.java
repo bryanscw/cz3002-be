@@ -64,7 +64,7 @@ public class AdminControllerTest {
     this.user.setEmail("create-candidate@test.com");
     this.user.setPass("password");
     this.user.setName("name");
-    this.user.setRole("ROLE_CANDIDATE");
+    this.user.setRole("ROLE_PATIENT");
   }
 
   public String getPersistentUserId() {

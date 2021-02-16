@@ -7,6 +7,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.is;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -16,7 +18,6 @@ import com.qwerty.cogbench.model.Diagnosis;
 import com.qwerty.cogbench.model.Result;
 import com.qwerty.cogbench.repository.DiagnosisRepository;
 import com.qwerty.cogbench.repository.ResultRepository;
-import com.qwerty.cogbench.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -66,9 +67,6 @@ public class DiagnosisControllerTest {
 
   private Diagnosis diagnosis;
 
-  @Autowired
-  private UserRepository userRepository;
-
   private MockUserClass user;
 
   private MockUserClass doctor;
@@ -79,7 +77,7 @@ public class DiagnosisControllerTest {
     this.user.setEmail("create-candidate@test.com");
     this.user.setPass("password");
     this.user.setName("name");
-    this.user.setRole("ROLE_CANDIDATE");
+    this.user.setRole("ROLE_PATIENT");
 
     this.doctor = new MockUserClass();
     this.doctor.setEmail("create-doctor@test.com");
@@ -161,7 +159,7 @@ public class DiagnosisControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders
-            .post(CONTEXT_PATH + String.format("/result/%s/create", this.user.getEmail()))
+            .post(CONTEXT_PATH + "/result/create")
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken)
@@ -183,8 +181,7 @@ public class DiagnosisControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/diagnosis/%s/create/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/diagnosis/create/%s",
                 getPersistentResult().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(diagnosisJson))
@@ -217,13 +214,15 @@ public class DiagnosisControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/diagnosis/%s/create/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/diagnosis/create/%s",
                 getPersistentResult().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken)
             .content(diagnosisJson))
         .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(getPersistentDiagnosis().getId())))
+            .andExpect(jsonPath("$.createdBy", is(getPersistentDiagnosis().getCreatedBy())))
+            .andExpect(jsonPath("$.doctor.email", is(getPersistentDiagnosis().getDoctor().getEmail())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -262,8 +261,7 @@ public class DiagnosisControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/diagnosis/%s/create/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/diagnosis/create/%s",
                 getPersistentResult().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken)
@@ -291,8 +289,7 @@ public class DiagnosisControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/diagnosis/%s/update/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/diagnosis/update/%s",
                 getPersistentResult().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(diagnosisJson))
@@ -327,13 +324,15 @@ public class DiagnosisControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/diagnosis/%s/update/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/diagnosis/update/%s",
                 getPersistentResult().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(diagnosisJson)
             .header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(getPersistentDiagnosis().getId())))
+            .andExpect(jsonPath("$.createdBy", is(getPersistentDiagnosis().getCreatedBy())))
+            .andExpect(jsonPath("$.doctor.email", is(getPersistentDiagnosis().getDoctor().getEmail())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -342,6 +341,12 @@ public class DiagnosisControllerTest {
         MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken));
+
+    // Check if data in `Diagnosis` object is persisted into the database
+    Diagnosis persistentDiagnosis = getPersistentDiagnosis();
+    assertEquals(this.diagnosis.getDescription(), persistentDiagnosis.getDescription());
+    assertEquals(this.diagnosis.getLabel(), persistentDiagnosis.getLabel());
+    assertNotNull(persistentDiagnosis.getId());
   }
 
   @Order(6)
@@ -349,8 +354,7 @@ public class DiagnosisControllerTest {
   public void should_notAllowDeleteDiagnosis_ifNotAuthorized() throws Exception {
     mockMvc.perform(
         MockMvcRequestBuilders.delete(
-            CONTEXT_PATH + String.format("/diagnosis/%s/delete/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/diagnosis/delete/%s",
                 getPersistentDiagnosis().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnauthorized())
@@ -379,8 +383,7 @@ public class DiagnosisControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders.delete(
-            CONTEXT_PATH + String.format("/diagnosis/%s/delete/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/diagnosis/delete/%s",
                 getPersistentDiagnosis().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken))
@@ -415,8 +418,7 @@ public class DiagnosisControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders.delete(
-            String.format("/diagnosis/%s/delete/%s",
-                this.user.getEmail(),
+            String.format("/diagnosis/delete/%s",
                 "1"))
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken))
@@ -451,8 +453,7 @@ public class DiagnosisControllerTest {
 
     this.mockMvc.perform(
         MockMvcRequestBuilders.delete(
-            CONTEXT_PATH + String.format("/result/%s/delete/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/result/delete/%s",
                 getPersistentResult().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header("Authorization", "Bearer " + accessToken))

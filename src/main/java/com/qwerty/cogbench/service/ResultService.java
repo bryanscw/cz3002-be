@@ -3,17 +3,18 @@ package com.qwerty.cogbench.service;
 import com.qwerty.cogbench.model.Result;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
+
+import java.security.Principal;
 
 public interface ResultService {
 
-  Result create(String userEmail, Result result, Authentication authentication);
+  Result create(Result result, Principal principal);
 
-  Result getLatestResult(String email, Authentication authentication);
+  Result getLatestResult(Principal principal);
 
-  boolean delete(String userEmail, Integer resultId, Authentication authentication);
+  boolean delete(Integer resultId, Principal principal);
 
-  Page<Result> getHistory(String email, Pageable pageable, Authentication authentication);
+  Page<Result> getHistory(Pageable pageable, Principal principal);
 
   Page<Result> fetchAll(Pageable pageable);
 
