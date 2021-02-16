@@ -1,5 +1,6 @@
 package com.qwerty.cogbench.integration;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -8,6 +9,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.hamcrest.Matchers.is;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -15,7 +18,6 @@ import com.qwerty.cogbench.mock.MockUserClass;
 import com.qwerty.cogbench.mock.MockUserConfigs;
 import com.qwerty.cogbench.model.Result;
 import com.qwerty.cogbench.repository.ResultRepository;
-import com.qwerty.cogbench.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -57,9 +59,6 @@ public class ResultControllerTest {
 
   @Autowired
   private ResultRepository resultRepository;
-
-  @Autowired
-  private UserRepository userRepository;
 
   private Result result;
 
@@ -129,8 +128,7 @@ public class ResultControllerTest {
     // Create user
     String resultJson = new ObjectMapper().writeValueAsString(this.result);
     mockMvc.perform(
-        MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/result/%s/create", this.doctor.getEmail()))
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/create")
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .content(resultJson))
@@ -163,13 +161,15 @@ public class ResultControllerTest {
     String resultJson = new ObjectMapper().writeValueAsString(this.result);
 
     mockMvc.perform(
-        MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/result/%s/create", this.user.getEmail()))
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/create")
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken)
             .content(resultJson))
         .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -180,10 +180,10 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
 
     // Check if data in `Result` object is persisted into the database
-    Result persistemtResult = getPersistentResult();
-    assertEquals(this.result.getAccuracy(), persistemtResult.getAccuracy());
-    assertEquals(this.result.getTime(), persistemtResult.getTime());
-    assertNotNull(persistemtResult.getId());
+    Result persistentResult = getPersistentResult();
+    assertEquals(this.result.getAccuracy(), persistentResult.getAccuracy());
+    assertEquals(this.result.getTime(), persistentResult.getTime());
+    assertNotNull(persistentResult.getId());
   }
 
   @Order(4)
@@ -191,11 +191,11 @@ public class ResultControllerTest {
   public void should_notGetLatestUserResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/result/%s/latest", this.user.getEmail()))
+            CONTEXT_PATH + "/result/latest", this.user.getEmail())
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .with(user("candidate1@test.com")))
-        .andExpect(status().isUnauthorized())
+        .andExpect(status().isForbidden())
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())
@@ -223,11 +223,14 @@ public class ResultControllerTest {
 
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/result/%s/latest", this.user.getEmail()))
+            CONTEXT_PATH + "/result/latest", this.user.getEmail())
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -243,7 +246,7 @@ public class ResultControllerTest {
   public void should_notGetAllUserResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/result/%s/all", this.user.getEmail()))
+            CONTEXT_PATH + "/result/all")
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnauthorized())
@@ -271,12 +274,12 @@ public class ResultControllerTest {
         .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-        MockMvcRequestBuilders.post(
-            CONTEXT_PATH + String.format("/result/%s/all", this.user.getEmail()))
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/all")
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content", hasSize(1)))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -324,6 +327,7 @@ public class ResultControllerTest {
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content", hasSize(1)))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -343,8 +347,7 @@ public class ResultControllerTest {
 
     this.mockMvc.perform(
         MockMvcRequestBuilders.delete(
-            CONTEXT_PATH + String.format("/result/%s/delete/%s",
-                this.user.getEmail(),
+            CONTEXT_PATH + String.format("/result/delete/%s",
                 getPersistentResult().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .content(resultJson))
@@ -377,7 +380,7 @@ public class ResultControllerTest {
 
     this.mockMvc.perform(
         MockMvcRequestBuilders.delete(
-            CONTEXT_PATH + String.format("/result/%s/delete/%s", this.user.getEmail(),
+            CONTEXT_PATH + String.format("/result/delete/%s",
                 getPersistentResult().getId())).contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header("Authorization", "Bearer " + accessToken)
@@ -413,7 +416,7 @@ public class ResultControllerTest {
 
     this.mockMvc.perform(
         MockMvcRequestBuilders
-            .delete(CONTEXT_PATH + String.format("/result/%s/delete/%s", this.user.getEmail(), "1"))
+            .delete(CONTEXT_PATH + String.format("/result/delete/%s", "1"))
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header("Authorization", "Bearer " + accessToken))

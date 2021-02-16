@@ -8,13 +8,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -47,85 +48,73 @@ public class ResultController {
   /**
    * Get result.
    *
-   * @param userEmail      Email of user owning the result
-   * @param authentication Authentication context containing information of the user submitting the
-   *                       request
+   * @param principal Principal context containing information of the user submitting the request
    * @return Result
    */
-  @RequestMapping(method = RequestMethod.POST, path = "/{userEmail}/latest")
-  @Secured({})
+  @RequestMapping(method = RequestMethod.POST, path = "/latest")
+  @Secured({"ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
   public Result getLatestUserResult(
-      @PathVariable(value = "userEmail") String userEmail,
-      Authentication authentication
+      Principal principal
   ) {
-    log.info("Getting latest result for user [{}]", userEmail);
-    return resultService.getLatestResult(userEmail, authentication);
+    log.info("Getting latest result for user [{}]", principal.getName());
+    return resultService.getLatestResult(principal);
   }
 
   /**
    * Get result.
    *
-   * @param userEmail      Email of user owning the result
    * @param pageable       Pagination context
-   * @param authentication Authentication context containing information of the user submitting the
-   *                       request
+   * @param principal Principal context containing information of the user submitting the request
    * @return Result
    */
-  @RequestMapping(method = RequestMethod.POST, path = "/{userEmail}/all")
+  @RequestMapping(method = RequestMethod.POST, path = "/all")
   @Secured({"ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
   public Page<Result> fetchAllUserResult(
-      @PathVariable(value = "userEmail") String userEmail,
       Pageable pageable,
-      Authentication authentication
+      Principal principal
   ) {
-    log.info("Getting all result for user [{}]", userEmail);
-    return resultService.getHistory(userEmail, pageable, authentication);
+    log.info("Getting all result for user [{}]", principal.getName());
+    return resultService.getHistory(pageable, principal);
   }
 
   /**
    * Create a new result.
    *
-   * @param userEmail      Email of user owning the result
-   * @param result         Result to be created
-   * @param authentication Authentication context containing information of the user submitting the
-   *                       request
+   * @param result Result to be created
+   * @param principal Principal context containing information of the user submitting the request
    * @return Created result
    */
-  @RequestMapping(method = RequestMethod.POST, path = "/{userEmail}/create")
+  @RequestMapping(method = RequestMethod.POST, path = "/create")
   @Secured({"ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
   public Result createResult(
-      @PathVariable(value = "userEmail") String userEmail,
       @RequestBody Result result,
-      Authentication authentication
+      Principal principal
   ) {
-    log.info("Creating result for user [{}]", result.getUser());
-    return resultService.create(userEmail, result, authentication);
+    log.info("Creating result for user [{}]", principal.getName());
+    return resultService.create(result, principal);
   }
 
   /**
    * Delete a Result.
    * <p>
    *
-   * @param userEmail      Email of user owning the result
    * @param resultId       Result id of result to be deleted
-   * @param authentication Authentication context containing information of the user submitting the
-   *                       request
+   * @param principal Principal context containing information of the user submitting the request
    * @return Flag indicating if request is successful
    */
-  @RequestMapping(method = RequestMethod.DELETE, path = "/{userEmail}/delete/{resultId}")
+  @RequestMapping(method = RequestMethod.DELETE, path = "/delete/{resultId}")
   @ResponseStatus(HttpStatus.OK)
   @Secured({"ROLE_DOCTOR"})
   public boolean deleteResult(
-      @PathVariable(value = "userEmail") String userEmail,
       @PathVariable(value = "resultId") Integer resultId,
-      Authentication authentication
+      Principal principal
   ) {
-    log.info("Deleting result with id [{}] for user [{}]", resultId, userEmail);
+    log.info("Deleting result with id [{}] for user [{}]", resultId, principal.getName());
 
-    return resultService.delete(userEmail, resultId, authentication);
+    return resultService.delete(resultId, principal);
   }
 
 }
