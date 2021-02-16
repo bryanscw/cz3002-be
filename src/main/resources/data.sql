@@ -11,7 +11,7 @@ INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('cand
 INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('candidate2@test.com', '$2y$12$ohMJVj0MXBeoG5u5YX69kuLRjewbv1h3xiK1I7FrBm7wi2XGdeNPq', 'ROLE_PATIENT', 'candidate2', '1956-09-11', '0');
 
 -- Username: doctor1@test.com, Password: doctor01
-INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('doctor1@test.com', '$2y$12$bz0DAPR/tl9g1RCM7Xcd1uRk22be4UUtcisBBmCuRSkbTBteP4/pW ', 'ROLE_DOCTOR', 'doctor1', '1997-01-02', '1');
+INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('doctor1@test.com', '$2y$12$bz0DAPR/tl9g1RCM7Xcd1uRk22be4UUtcisBBmCuRSkbTBteP4/pW', 'ROLE_DOCTOR', 'doctor1', '1997-01-02', '1');
 
 -- Username: doctor2@test.com, Password: doctor02
 INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('doctor2@test.com', '$2y$12$oK0EgHJ5Ya.pIoAwy77kaeTFfec6OW0N/NyVPPQY40AfLvwNF36Oi', 'ROLE_DOCTOR', 'doctor2', '1984-09-11', '0');
