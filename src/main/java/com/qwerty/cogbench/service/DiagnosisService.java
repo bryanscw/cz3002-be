@@ -1,16 +1,17 @@
 package com.qwerty.cogbench.service;
 
 import com.qwerty.cogbench.model.Diagnosis;
-import org.springframework.security.core.Authentication;
+
+import java.security.Principal;
 
 public interface DiagnosisService {
 
-  Diagnosis create(String userEmail, Integer resultId, Diagnosis diagnosis,
-      Authentication authentication);
+  Diagnosis create(Integer resultId, Diagnosis diagnosis,
+      Principal principal);
 
-  Diagnosis update(String userEmail, Integer resultId, Diagnosis diagnosis,
-      Authentication authentication);
+  Diagnosis update(Integer resultId, Diagnosis diagnosis,
+      Principal principal);
 
-  boolean delete(String userEmail, Integer diagnosisId, Authentication authentication);
+  boolean delete(Integer diagnosisId, Principal principal);
 
 }

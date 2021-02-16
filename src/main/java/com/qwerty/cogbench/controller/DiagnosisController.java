@@ -6,13 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 @Slf4j
 @RestController
@@ -31,69 +32,60 @@ public class DiagnosisController {
   /**
    * Create a new diagnosis.
    *
-   * @param userEmail      Email of doctor creating the diagnosis
    * @param resultId       Id of the result of which the diagnosis should be created for
    * @param diagnosis      Diagnosis to be added
-   * @param authentication Authentication context containing information of the user submitting the
-   *                       request
+   * @param principal Principal context containing information of the user submitting the request
    * @return Created result
    */
-  @RequestMapping(method = RequestMethod.POST, path = "/{userEmail}/create/{resultId}")
+  @RequestMapping(method = RequestMethod.POST, path = "/create/{resultId}")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
   public Diagnosis createDiagnosis(
-      @PathVariable(value = "userEmail") String userEmail,
       @PathVariable(value = "resultId") Integer resultId,
       @RequestBody Diagnosis diagnosis,
-      Authentication authentication
+      Principal principal
   ) {
     log.info("Creating diagnosis for report with id: [{}]", resultId);
-    return diagnosisService.create(userEmail, resultId, diagnosis, authentication);
+    return diagnosisService.create(resultId, diagnosis, principal);
   }
 
   /**
    * Create a new diagnosis.
    *
-   * @param userEmail      Email of doctor creating the diagnosis
    * @param diagnosis      Diagnosis to be added
-   * @param authentication Authentication context containing information of the user submitting the
-   *                       request
+   * @param principal Principal context containing information of the user submitting the request
    * @return Created result
    */
   @RequestMapping(method = {RequestMethod.POST,
-      RequestMethod.PATCH}, path = "/{userEmail}/update/{resultId}")
+      RequestMethod.PATCH}, path = "/update/{resultId}")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
   public Diagnosis updateDiagnosis(
-      @PathVariable(value = "userEmail") String userEmail,
       @PathVariable(value = "resultId") Integer resultId,
       @RequestBody Diagnosis diagnosis,
-      Authentication authentication
+      Principal principal
   ) {
-    log.info("Updating diagnosis for user [{}] with result Id [{}]", userEmail, resultId);
-    return diagnosisService.update(userEmail, resultId, diagnosis, authentication);
+    log.info("Updating diagnosis for result with Id [{}]", resultId);
+    return diagnosisService.update(resultId, diagnosis, principal);
   }
 
   /**
    * Delete a Diagnosis.
    * <p>
    *
-   * @param userEmail      Email of doctor deleting the result
    * @param diagnosisId    Diagnosis id of diagnosis to be deleted
-   * @param authentication Authentication context containing information of the user submitting the
-   *                       request
+   * @param principal Principal context containing information of the user submitting the request
    * @return Flag indicating if request is successful
    */
-  @RequestMapping(method = RequestMethod.DELETE, path = "/{userEmail}/delete/{diagnosisId}")
+  @RequestMapping(method = RequestMethod.DELETE, path = "/delete/{diagnosisId}")
   @ResponseStatus(HttpStatus.OK)
   @Secured({"ROLE_DOCTOR"})
   public boolean deleteDiagnosis(
-      @PathVariable(value = "userEmail") String userEmail,
       @PathVariable(value = "diagnosisId") Integer diagnosisId,
-      Authentication authentication
+      Principal principal
   ) {
-    log.info("Deleting diagnosis with id [{}] for user [{}]", diagnosisId, userEmail);
-    return diagnosisService.delete(userEmail, diagnosisId, authentication);
+    log.info("Deleting diagnosis with Id [{}]", diagnosisId);
+    return diagnosisService.delete(diagnosisId, principal);
   }
 
 }
