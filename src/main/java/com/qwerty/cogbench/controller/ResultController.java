@@ -73,7 +73,7 @@ public class ResultController {
    * @return Result
    */
   @RequestMapping(method = RequestMethod.POST, path = "/{userEmail}/all")
-  @Secured({"ROLE_CANDIDATE"})
+  @Secured({"ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
   public Page<Result> fetchAllUserResult(
       @PathVariable(value = "userEmail") String userEmail,
@@ -94,7 +94,7 @@ public class ResultController {
    * @return Created result
    */
   @RequestMapping(method = RequestMethod.POST, path = "/{userEmail}/create")
-  @Secured({"ROLE_CANDIDATE"})
+  @Secured({"ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
   public Result createResult(
       @PathVariable(value = "userEmail") String userEmail,
