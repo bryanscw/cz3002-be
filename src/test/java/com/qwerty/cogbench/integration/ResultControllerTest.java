@@ -246,7 +246,7 @@ public class ResultControllerTest {
   public void should_notGetAllUserResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
         MockMvcRequestBuilders.post(
-            CONTEXT_PATH + "/result/all")
+            CONTEXT_PATH + "/result/me")
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isUnauthorized())
@@ -274,7 +274,7 @@ public class ResultControllerTest {
         .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-        MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/all")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/me")
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken))

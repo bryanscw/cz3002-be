@@ -68,7 +68,7 @@ public class ResultController {
    * @param principal Principal context containing information of the user submitting the request
    * @return Result
    */
-  @RequestMapping(method = RequestMethod.POST, path = "/all")
+  @RequestMapping(method = RequestMethod.POST, path = "/me")
   @Secured({"ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
   public Page<Result> fetchAllUserResult(
