@@ -50,11 +50,29 @@ public class DiagnosisController {
   }
 
   /**
-   * Create a new diagnosis.
+   * Fetch diagnosis.
+   *
+   * @param resultId       Id of the result of which the diagnosis should be created for
+   * @param principal Principal context containing information of the user submitting the request
+   * @return Requested diagnosis
+   */
+  @RequestMapping(method = RequestMethod.POST, path = "/{resultId}")
+  @Secured({"ROLE_DOCTOR", "ROLE_PATIENT"})
+  @ResponseStatus(HttpStatus.OK)
+  public Diagnosis fetchDiagnosis(
+          @PathVariable(value = "resultId") Integer resultId,
+          Principal principal
+  ) {
+    log.info("Fetching diagnosis for report with id: [{}]", resultId);
+    return diagnosisService.fetch(resultId, principal);
+  }
+
+  /**
+   * Update diagnosis.
    *
    * @param diagnosis      Diagnosis to be added
    * @param principal Principal context containing information of the user submitting the request
-   * @return Created result
+   * @return Updated diagnosis
    */
   @RequestMapping(method = {RequestMethod.POST,
       RequestMethod.PATCH}, path = "/update/{resultId}")

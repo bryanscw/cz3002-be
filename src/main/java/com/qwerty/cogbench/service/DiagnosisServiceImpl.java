@@ -2,6 +2,7 @@ package com.qwerty.cogbench.service;
 
 import com.qwerty.cogbench.exception.ResourceAlreadyExistsException;
 import com.qwerty.cogbench.exception.ResourceNotFoundException;
+import com.qwerty.cogbench.exception.UnauthorizedException;
 import com.qwerty.cogbench.model.Diagnosis;
 import com.qwerty.cogbench.model.Result;
 import com.qwerty.cogbench.model.User;
@@ -66,6 +67,33 @@ public class DiagnosisServiceImpl implements DiagnosisService {
   }
 
   @Override
+  public Diagnosis fetch(final Integer resultId, Principal principal){
+
+
+    User userToFind = userRepository.findUserByEmail(principal.getName()).orElseThrow(() -> {
+      String errorMsg = String.format("User [%s] not found", principal.getName());
+      log.error(errorMsg);
+      return new ResourceNotFoundException(errorMsg);
+    });
+
+    Result resultToFind = resultRepository.findResultById(resultId).orElseThrow(() -> {
+      String errorMsg = String.format("Result [%s] not found", resultId);
+      log.error(errorMsg);
+      return new ResourceNotFoundException(errorMsg);
+    });
+
+    this.doAuthCheck(resultToFind, userToFind);
+
+    Diagnosis diagnosisToFind = diagnosisRepository.findDiagnosisByResult(resultToFind).orElseThrow(() -> {
+      String errorMsg = String.format("Diagnosis for resultId [%s] not found", resultId);
+      log.error(errorMsg);
+      return new ResourceNotFoundException(errorMsg);
+    });
+
+    return diagnosisToFind;
+  }
+
+  @Override
   public Diagnosis update(Integer resultId, Diagnosis diagnosis,
       Principal principal) {
 
@@ -110,6 +138,17 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     diagnosisRepository.deleteById(diagnosisToFind.getId());
 
     return true;
+  }
+
+  private void doAuthCheck(Result result, User user){
+    if (user.getRole().equals("ROLE_PATIENT") && !result.getUser().equals(user)){
+      String progressErrorMsg = String
+              .format("User with Id [%s] not authorized to access resource for user with ID [%s]",
+                      result.getUser().getName(),
+                      user.getName());
+      log.error(progressErrorMsg);
+      throw new ResourceNotFoundException(progressErrorMsg);
+    }
   }
 
 }

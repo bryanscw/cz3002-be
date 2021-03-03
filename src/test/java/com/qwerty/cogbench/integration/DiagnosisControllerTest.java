@@ -276,6 +276,63 @@ public class DiagnosisControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken));
 
+  }@Order(4)
+  @Test
+  public void should_notAllowFetchDiagnosis_ifNotAuthorized() throws Exception {
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    CONTEXT_PATH + String.format("/diagnosis/%s",
+                            getPersistentResult().getId())).contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isUnauthorized())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+  }
+
+  @Order(5)
+  @Test
+  public void should_allowFetchDiagnosis_ifAuthorized() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.doctor.getEmail())
+                    .param("password", this.doctor.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    CONTEXT_PATH + String.format("/diagnosis/%s",
+                            getPersistentResult().getId())).contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(getPersistentDiagnosis().getId())))
+            .andExpect(jsonPath("$.createdBy", is(getPersistentDiagnosis().getCreatedBy())))
+            .andExpect(jsonPath("$.doctor.email", is(getPersistentDiagnosis().getDoctor().getEmail())))
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+
+    // Check if data in `Diagnosis` object is persisted into the database
+    Diagnosis persistentDiagnosis = getPersistentDiagnosis();
+    assertEquals(this.diagnosis.getDescription(), persistentDiagnosis.getDescription());
+    assertEquals(this.diagnosis.getLabel(), persistentDiagnosis.getLabel());
+    assertNotNull(persistentDiagnosis.getId());
   }
 
   @Order(4)
