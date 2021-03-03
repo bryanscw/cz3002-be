@@ -49,17 +49,12 @@ public class DiagnosisController {
     return diagnosisService.create(resultId, diagnosis, principal);
   }
 
-  ice) {
-    this.diagnosisService = diagnosisService;
-  }
-
   /**
-   * Create a new diagnosis.
+   * Fetch diagnosis.
    *
    * @param resultId       Id of the result of which the diagnosis should be created for
-   * @param diagnosis      Diagnosis to be added
    * @param principal Principal context containing information of the user submitting the request
-   * @return Created result
+   * @return Requested diagnosis
    */
   @RequestMapping(method = RequestMethod.POST, path = "/{resultId}")
   @Secured({"ROLE_DOCTOR", "ROLE_PATIENT"})
