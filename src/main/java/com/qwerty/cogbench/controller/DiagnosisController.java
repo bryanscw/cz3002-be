@@ -64,7 +64,7 @@ public class DiagnosisController {
           Principal principal
   ) {
     log.info("Creating diagnosis for report with id: [{}]", resultId);
-    return diagnosisService.create(resultId, principal);
+    return diagnosisService.fetch(resultId, principal);
   }
 
   /**
