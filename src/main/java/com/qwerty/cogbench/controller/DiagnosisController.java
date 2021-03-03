@@ -63,16 +63,16 @@ public class DiagnosisController {
           @PathVariable(value = "resultId") Integer resultId,
           Principal principal
   ) {
-    log.info("Creating diagnosis for report with id: [{}]", resultId);
+    log.info("Fetching diagnosis for report with id: [{}]", resultId);
     return diagnosisService.fetch(resultId, principal);
   }
 
   /**
-   * Create a new diagnosis.
+   * Update diagnosis.
    *
    * @param diagnosis      Diagnosis to be added
    * @param principal Principal context containing information of the user submitting the request
-   * @return Created result
+   * @return Updated diagnosis
    */
   @RequestMapping(method = {RequestMethod.POST,
       RequestMethod.PATCH}, path = "/update/{resultId}")

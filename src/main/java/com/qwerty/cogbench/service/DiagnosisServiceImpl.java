@@ -82,7 +82,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
       return new ResourceNotFoundException(errorMsg);
     });
 
-    this.isAuthorized(resultToFind, userToFind);
+    this.authorizationCheck(resultToFind, userToFind);
 
     Diagnosis diagnosisToFind = diagnosisRepository.findDiagnosisByResult(resultToFind).orElseThrow(() -> {
       String errorMsg = String.format("Diagnosis for resultId [%s] not found", resultId);
@@ -140,7 +140,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     return true;
   }
 
-  private void isAuthorized(Result result, User user){
+  private void authorizationCheck(Result result, User user){
     if (user.getRole().equals("ROLE_PATIENT") && !result.getUser().equals(user)){
       String progressErrorMsg = String
               .format("User with Id [%s] not authorized to access resource for user with ID [%s]",
