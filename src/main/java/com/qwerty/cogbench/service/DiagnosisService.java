@@ -9,6 +9,8 @@ public interface DiagnosisService {
   Diagnosis create(Integer resultId, Diagnosis diagnosis,
       Principal principal);
 
+  Diagnosis fetch(Integer resultId, Principal principal);
+
   Diagnosis update(Integer resultId, Diagnosis diagnosis,
       Principal principal);
 
