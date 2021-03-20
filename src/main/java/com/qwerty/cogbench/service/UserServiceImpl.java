@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     User userToFind = userRepository.findById(user.getEmail()).orElseThrow(() -> {
       String errorMsg = String.format("User with email: [%s] not found", user.getEmail());
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     if (user.getEmail() != null) {
