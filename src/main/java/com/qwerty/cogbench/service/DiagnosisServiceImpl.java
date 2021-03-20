@@ -147,7 +147,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
                       result.getUser().getName(),
                       user.getName());
       log.error(progressErrorMsg);
-      throw new ResourceNotFoundException(progressErrorMsg);
+      throw new UnauthorizedException(progressErrorMsg);
     }
   }
 

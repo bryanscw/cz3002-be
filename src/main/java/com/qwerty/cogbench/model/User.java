@@ -52,4 +52,15 @@ public class User {
   @Setter
   private Gender gender;
 
+  @Override
+  public boolean equals(Object obj) {
+    User userObj = (User) obj;
+    return this.email.equals(userObj.getEmail())
+        && this.pass.equals(userObj.getPass())
+        && this.role.equals(userObj.getRole())
+        && this.name.equals(userObj.getName())
+        && this.dob.equals(userObj.getDob())
+        && this.gender.equals(userObj.getGender());
+  }
+
 }

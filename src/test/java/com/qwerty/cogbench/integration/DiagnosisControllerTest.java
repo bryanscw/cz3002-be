@@ -276,7 +276,9 @@ public class DiagnosisControllerTest {
             .accept(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken));
 
-  }@Order(4)
+  }
+
+  @Order(4)
   @Test
   public void should_notAllowFetchDiagnosis_ifNotAuthorized() throws Exception {
 

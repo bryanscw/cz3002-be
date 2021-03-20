@@ -5,12 +5,11 @@ import com.qwerty.cogbench.model.Result;
 import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.repository.ResultRepository;
 import com.qwerty.cogbench.repository.UserRepository;
+import java.security.Principal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.security.Principal;
 
 @Slf4j
 @Service
@@ -47,9 +46,11 @@ public class ResultServiceImpl implements ResultService {
   @Override
   public Result getLatestResult(Principal principal) {
 
-    return resultRepository.findLatestResultByUserEmail(principal.getName()).orElseThrow(
-        () -> new ResourceNotFoundException(
-            String.format("User with email [%s] not found", principal.getName())));
+    return resultRepository
+        .findFirstByUserEmailOrderByLastModifiedDateDesc(principal.getName())
+        .orElseThrow(
+            () -> new ResourceNotFoundException(
+                String.format("User with email [%s] not found", principal.getName())));
   }
 
   public Page<Result> getHistory(Pageable pageable, Principal principal) {

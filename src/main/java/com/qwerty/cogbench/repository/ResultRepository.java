@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface ResultRepository extends PagingAndSortingRepository<Result, Integer> {
 
-    Optional<Result> findLatestResultByUserEmail(String email);
+    Optional<Result> findFirstByUserEmailOrderByLastModifiedDateDesc(String email);
 
     Optional<Result> findResultById(Integer id);
 
