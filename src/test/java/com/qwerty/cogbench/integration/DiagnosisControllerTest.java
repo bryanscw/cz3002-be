@@ -287,7 +287,7 @@ public class DiagnosisControllerTest {
                     CONTEXT_PATH + String.format("/diagnosis/%s",
                             getPersistentResult().getId())).contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound())
+            .andExpect(status().isUnauthorized())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
