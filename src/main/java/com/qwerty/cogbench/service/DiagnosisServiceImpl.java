@@ -44,13 +44,13 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     User doctorToFind = userRepository.findUserByEmail(principal.getName()).orElseThrow(() -> {
       String errorMsg = String.format("User [%s] not found", principal.getName());
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     Result resultToFind = resultRepository.findResultById(resultId).orElseThrow(() -> {
       String errorMsg = String.format("Result with id [%s] not found", resultId);
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     if (diagnosisRepository.findDiagnosisByResult(resultToFind).isPresent()) {
@@ -73,13 +73,13 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     User userToFind = userRepository.findUserByEmail(principal.getName()).orElseThrow(() -> {
       String errorMsg = String.format("User [%s] not found", principal.getName());
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     Result resultToFind = resultRepository.findResultById(resultId).orElseThrow(() -> {
       String errorMsg = String.format("Result [%s] not found", resultId);
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     this.doAuthCheck(resultToFind, userToFind);
@@ -87,7 +87,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     Diagnosis diagnosisToFind = diagnosisRepository.findDiagnosisByResult(resultToFind).orElseThrow(() -> {
       String errorMsg = String.format("Diagnosis for resultId [%s] not found", resultId);
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     return diagnosisToFind;
@@ -100,20 +100,20 @@ public class DiagnosisServiceImpl implements DiagnosisService {
     User doctorToFind = userRepository.findUserByEmail(principal.getName()).orElseThrow(() -> {
       String errorMsg = String.format("User [%s] not found", principal.getName());
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     Result resultToFind = resultRepository.findResultById(resultId).orElseThrow(() -> {
       String errorMsg = String.format("Result with id [%s] not found", resultId);
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     Diagnosis diagnosisToFind = diagnosisRepository.findDiagnosisByResult(resultToFind)
         .orElseThrow(() -> {
           String errorMsg = String.format("Diagnosis with result id [%s] not found", resultId);
           log.error(errorMsg);
-          return new ResourceNotFoundException(errorMsg);
+          throw new ResourceNotFoundException(errorMsg);
         });
 
     diagnosis.setDoctor(doctorToFind);
@@ -143,7 +143,7 @@ public class DiagnosisServiceImpl implements DiagnosisService {
   private void doAuthCheck(Result result, User user){
     if (user.getRole().equals("ROLE_PATIENT") && !result.getUser().equals(user)){
       String progressErrorMsg = String
-              .format("User with Id [%s] not authorized to access resource for user with ID [%s]",
+              .format("User with Id [%s] not authorized to access resource for user with Id [%s]",
                       result.getUser().getName(),
                       user.getName());
       log.error(progressErrorMsg);

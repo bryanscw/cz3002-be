@@ -35,7 +35,7 @@ public class ResultServiceImpl implements ResultService {
     User userToFind = userRepository.findUserByEmail(principal.getName()).orElseThrow(() -> {
       String errorMsg = String.format("User with email [%s] not found", principal.getName());
       log.error(errorMsg);
-      return new ResourceNotFoundException(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
     });
 
     result.setUser(userToFind);
