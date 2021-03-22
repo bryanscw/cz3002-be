@@ -121,7 +121,7 @@ public class ResultController {
 
   @RequestMapping(method = RequestMethod.GET, path = "/graph/time")
   @ResponseStatus(HttpStatus.OK)
-  @Secured({"ROLE_DOCTOR"})
+  @Secured({"ROLE_DOCTOR", "ROLE_PATIENT"})
   public ResultDistriDto getTimeGraphData(
       @RequestParam(value = "bins", defaultValue="10") Integer bins
   ) {
@@ -132,7 +132,7 @@ public class ResultController {
 
   @RequestMapping(method = RequestMethod.GET, path = "/graph/accuracy")
   @ResponseStatus(HttpStatus.OK)
-  @Secured({"ROLE_DOCTOR"})
+  @Secured({"ROLE_DOCTOR", "ROLE_PATIENT"})
   public ResultDistriDto getAccuracyGraphData(
       @RequestParam(value = "bins", defaultValue="10") Integer bins
   ) {
