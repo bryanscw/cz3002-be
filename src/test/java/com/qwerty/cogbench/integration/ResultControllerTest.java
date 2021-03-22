@@ -343,7 +343,7 @@ public class ResultControllerTest {
   public void should_notGetTimeGraphData_ifNotAuthorized() throws Exception {
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
+            MockMvcRequestBuilders.get(
                     CONTEXT_PATH + "/result/graph/time")
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -373,7 +373,7 @@ public class ResultControllerTest {
             .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
+            MockMvcRequestBuilders.get(
                     CONTEXT_PATH + "/result/graph/time", this.user.getEmail())
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -396,8 +396,8 @@ public class ResultControllerTest {
   public void should_notGetAccuracyGraphData_ifNotAuthorized() throws Exception {
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    CONTEXT_PATH + "/result/graph/acuracy")
+            MockMvcRequestBuilders.get(
+                    CONTEXT_PATH + "/result/graph/accuracy")
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
                     .param("bins", "10"))
@@ -426,7 +426,7 @@ public class ResultControllerTest {
             .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
+            MockMvcRequestBuilders.get(
                     CONTEXT_PATH + "/result/graph/accuracy", this.user.getEmail())
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
