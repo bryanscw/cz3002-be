@@ -338,7 +338,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(5)
+  @Order(10)
   @Test
   public void should_notGetTimeGraphData_ifNotAuthorized() throws Exception {
 
@@ -347,14 +347,14 @@ public class ResultControllerTest {
                     CONTEXT_PATH + "/result/graph/time")
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .param("10"))
+                    .param("bins", "10"))
             .andExpect(status().isUnauthorized())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(5)
+  @Order(11)
   @Test
   public void should_getTimeGraphData_ifAuthorized() throws Exception {
 
@@ -378,7 +378,7 @@ public class ResultControllerTest {
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", "Bearer " + accessToken)
-                    .param("10"))
+                    .param("bins", "10"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.result.time").isNotEmpty())
             .andDo(document("{methodName}",
@@ -391,7 +391,7 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(5)
+  @Order(12)
   @Test
   public void should_notGetAccuracyGraphData_ifNotAuthorized() throws Exception {
 
@@ -400,14 +400,14 @@ public class ResultControllerTest {
                     CONTEXT_PATH + "/result/graph/acuracy")
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .param("10"))
+                    .param("bins", "10"))
             .andExpect(status().isUnauthorized())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(5)
+  @Order(13)
   @Test
   public void should_getAccuracyGraphData_ifAuthorized() throws Exception {
 
@@ -431,7 +431,7 @@ public class ResultControllerTest {
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", "Bearer " + accessToken)
-                    .param("10"))
+                    .param("bins", "10"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.result.accuracy").isNotEmpty())
             .andDo(document("{methodName}",
@@ -444,7 +444,7 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(10)
+  @Order(14)
   @Test
   @WithUserDetails("candidate1@test.com")
   public void should_notAllowDeleteResult_ifNotAuthorized() throws Exception {
@@ -463,7 +463,7 @@ public class ResultControllerTest {
             preprocessResponse(prettyPrint())));
   }
 
-  @Order(11)
+  @Order(15)
   @Test
   public void should_allowDeleteResult_ifAuthorized() throws Exception {
 
@@ -502,7 +502,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(11)
+  @Order(16)
   @Test
   public void should_notAllowDeleteResult_ifNotExist() throws Exception {
 
