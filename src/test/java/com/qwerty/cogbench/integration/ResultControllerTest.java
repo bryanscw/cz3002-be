@@ -338,6 +338,112 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
+  @Order(5)
+  @Test
+  public void should_notGetTimeGraphData_ifNotAuthorized() throws Exception {
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    CONTEXT_PATH + "/result/graph/time")
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("10"))
+            .andExpect(status().isUnauthorized())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+  }
+
+  @Order(5)
+  @Test
+  public void should_getTimeGraphData_ifAuthorized() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.user.getEmail())
+                    .param("password", this.user.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    CONTEXT_PATH + "/result/graph/time", this.user.getEmail())
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .param("10"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.result.time").isNotEmpty())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+  }
+
+  @Order(5)
+  @Test
+  public void should_notGetAccuracyGraphData_ifNotAuthorized() throws Exception {
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    CONTEXT_PATH + "/result/graph/acuracy")
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("10"))
+            .andExpect(status().isUnauthorized())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+  }
+
+  @Order(5)
+  @Test
+  public void should_getAccuracyGraphData_ifAuthorized() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.user.getEmail())
+                    .param("password", this.user.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    CONTEXT_PATH + "/result/graph/accuracy", this.user.getEmail())
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .param("10"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.result.accuracy").isNotEmpty())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+  }
+
   @Order(10)
   @Test
   @WithUserDetails("candidate1@test.com")
