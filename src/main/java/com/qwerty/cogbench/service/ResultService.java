@@ -1,5 +1,6 @@
 package com.qwerty.cogbench.service;
 
+import com.qwerty.cogbench.dto.ResultDistriDto;
 import com.qwerty.cogbench.model.Result;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +18,9 @@ public interface ResultService {
   Page<Result> getHistory(Pageable pageable, Principal principal);
 
   Page<Result> fetchAll(Pageable pageable);
+
+  ResultDistriDto getAccuracyGraphData(Integer bins);
+
+  ResultDistriDto getTimeGraphData(Integer bins);
 
 }

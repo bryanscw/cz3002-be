@@ -1,5 +1,6 @@
 package com.qwerty.cogbench.controller;
 
+import com.qwerty.cogbench.dto.ResultDistriDto;
 import com.qwerty.cogbench.model.Result;
 import com.qwerty.cogbench.service.ResultService;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -116,5 +118,28 @@ public class ResultController {
 
     return resultService.delete(resultId, principal);
   }
+
+  @RequestMapping(method = RequestMethod.GET, path = "/graph/time")
+  @ResponseStatus(HttpStatus.OK)
+  @Secured({"ROLE_DOCTOR"})
+  public ResultDistriDto getTimeGraphData(
+      @RequestParam(value = "bins", defaultValue="10") Integer bins
+  ) {
+    log.info("Fetching graph data for result.time");
+
+    return resultService.getTimeGraphData(bins);
+  }
+
+  @RequestMapping(method = RequestMethod.GET, path = "/graph/accuracy")
+  @ResponseStatus(HttpStatus.OK)
+  @Secured({"ROLE_DOCTOR"})
+  public ResultDistriDto getAccuracyGraphData(
+      @RequestParam(value = "bins", defaultValue="10") Integer bins
+  ) {
+    log.info("Fetching graph data for result.accuracy");
+
+    return resultService.getAccuracyGraphData(bins);
+  }
+
 
 }
