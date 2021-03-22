@@ -34,10 +34,10 @@ public class Result extends Auditable<String> {
 
   @Getter
   @Setter
-  private Float accuracy;
+  private Double accuracy;
 
   @Getter
   @Setter
-  private Float time;
+  private Double time;
 
 }

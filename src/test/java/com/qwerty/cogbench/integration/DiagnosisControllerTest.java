@@ -86,8 +86,8 @@ public class DiagnosisControllerTest {
     this.doctor.setRole("ROLE_DOCTOR");
 
     this.result = new Result();
-    this.result.setAccuracy((float) 78.9);
-    this.result.setTime((float) 78.1);
+    this.result.setAccuracy(78.9);
+    this.result.setTime(78.1);
 
     this.diagnosis = new Diagnosis();
     this.diagnosis.setDescription("Sample Description");

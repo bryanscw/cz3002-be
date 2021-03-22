@@ -1,5 +1,6 @@
 package com.qwerty.cogbench.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,8 @@ import lombok.ToString;
 @ToString
 public class ResultDistriDto {
 
-  private double mean;
+  private List<String> labels;
 
-  private double variance;
+  private List<Integer> data;
 
 }

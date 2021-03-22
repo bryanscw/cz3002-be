@@ -1,11 +1,17 @@
 package com.qwerty.cogbench.service;
 
+import com.qwerty.cogbench.dto.ResultDistriDto;
 import com.qwerty.cogbench.exception.ResourceNotFoundException;
 import com.qwerty.cogbench.model.Result;
 import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.repository.ResultRepository;
 import com.qwerty.cogbench.repository.UserRepository;
+import com.qwerty.cogbench.util.Histogram;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.DoubleSummaryStatistics;
+import java.util.List;
+import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,5 +83,38 @@ public class ResultServiceImpl implements ResultService {
     resultRepository.deleteById(resultToFind.getId());
 
     return true;
+  }
+
+  @Override
+  public ResultDistriDto getAccuracyGraphData(Integer bins) {
+    List<Double> accuracies = resultRepository.findAllAccuracy();
+    return buildResultDtriDto(accuracies, bins);
+  }
+
+  @Override
+  public ResultDistriDto getTimeGraphData(Integer bins) {
+    List<Double> times = resultRepository.findAllTime();
+    return buildResultDtriDto(times, bins);
+  }
+
+
+  private static ResultDistriDto buildResultDtriDto(List<Double> doubleList, Integer bins) {
+    final DoubleSummaryStatistics statistics = doubleList.stream().mapToDouble(x -> x)
+        .summaryStatistics();
+    final double max = statistics.getMax();
+    final double min = statistics.getMin();
+    final double binSize = (max - min) / bins;
+    final Histogram histogram = Histogram.from(doubleList);
+    final Map<Integer, Integer> frequencies = histogram.histogram(bins);
+
+    List<Integer> data = new ArrayList<>();
+    frequencies.forEach((key, value) -> data.add(value));
+
+    List<String> labels = new ArrayList<>();
+    for (int i = 0; i < bins; i++) {
+      labels.add(String.format("[%.2f,%.2f)", min + i * binSize, min + (i + 1) * binSize));
+    }
+
+    return new ResultDistriDto(labels, data);
   }
 }
