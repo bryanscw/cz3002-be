@@ -582,6 +582,86 @@ include::{snippets}/should_allowFetchAllResult_ifAuthorized/request-body.adoc[]
 .Response sample
 include::{snippets}/should_allowFetchAllResult_ifAuthorized/response-body.adoc[]
 
+=== Reject fetch time graph data if credentials are invalid
+
+ .Request sample with curl
+ include::{snippets}/should_notGetTimeGraphData_ifNotAuthorized/curl-request.adoc[]
+
+ .Request sample with http
+ include::{snippets}/should_notGetTimeGraphData_ifNotAuthorized/http-request.adoc[]
+
+ .Request sample with httpie
+ include::{snippets}/should_notGetTimeGraphData_ifNotAuthorized/httpie-request.adoc[]
+
+ .HTTP response
+ include::{snippets}/should_notGetTimeGraphData_ifNotAuthorized/http-response.adoc[]
+
+ .Request sample
+ include::{snippets}/should_notGetTimeGraphData_ifNotAuthorized/request-body.adoc[]
+
+ .Response sample
+ include::{snippets}/should_notGetTimeGraphData_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch time graph data if credentials are valid
+
+ .Request sample with curl
+ include::{snippets}/should_getTimeGraphData_ifAuthorized/curl-request.adoc[]
+
+ .Request sample with http
+ include::{snippets}/should_getTimeGraphData_ifAuthorized/http-request.adoc[]
+
+ .Request sample with httpie
+ include::{snippets}/should_getTimeGraphData_ifAuthorized/httpie-request.adoc[]
+
+ .HTTP response
+ include::{snippets}/should_getTimeGraphData_ifAuthorized/http-response.adoc[]
+
+ .Request sample
+ include::{snippets}/should_getTimeGraphData_ifAuthorized/request-body.adoc[]
+
+ .Response sample
+ include::{snippets}/should_getTimeGraphData_ifAuthorized/response-body.adoc[]
+
+=== Reject fetch accuracy graph data if credentials are invalid
+
+ .Request sample with curl
+ include::{snippets}/should_notGetAccuracyGraphData_ifNotAuthorized/curl-request.adoc[]
+
+ .Request sample with http
+ include::{snippets}/should_notGetAccuracyGraphData_ifNotAuthorized/http-request.adoc[]
+
+ .Request sample with httpie
+ include::{snippets}/should_notGetAccuracyGraphData_ifNotAuthorized/httpie-request.adoc[]
+
+ .HTTP response
+ include::{snippets}/should_notGetAccuracyGraphData_ifNotAuthorized/http-response.adoc[]
+
+ .Request sample
+ include::{snippets}/should_notGetAccuracyGraphData_ifNotAuthorized/request-body.adoc[]
+
+ .Response sample
+ include::{snippets}/should_notGetAccuracyGraphData_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch accuracy graph data if credentials are valid
+
+ .Request sample with curl
+ include::{snippets}/should_getAccuracyGraphData_ifAuthorized/curl-request.adoc[]
+
+ .Request sample with http
+ include::{snippets}/should_getAccuracyGraphData_ifAuthorized/http-request.adoc[]
+
+ .Request sample with httpie
+ include::{snippets}/should_getAccuracyGraphData_ifAuthorized/httpie-request.adoc[]
+
+ .HTTP response
+ include::{snippets}/should_getAccuracyGraphData_ifAuthorized/http-response.adoc[]
+
+ .Request sample
+ include::{snippets}/should_getAccuracyGraphData_ifAuthorized/request-body.adoc[]
+
+ .Response sample
+ include::{snippets}/should_getAccuracyGraphData_ifAuthorized/response-body.adoc[]
+
 === Reject delete result if credentials are invalid
 
 .Request sample with curl

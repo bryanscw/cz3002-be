@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to allow fetch acuracy graph data if credentials are valid.
+
+== Allow fetch accuracy graph data if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_getAccuracyGraphData_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_getAccuracyGraphData_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_getAccuracyGraphData_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_getAccuracyGraphData_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_getAccuracyGraphData_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_getAccuracyGraphData_ifAuthorized/response-body.adoc[]
