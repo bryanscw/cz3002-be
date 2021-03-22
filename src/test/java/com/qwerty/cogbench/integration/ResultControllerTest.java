@@ -380,7 +380,8 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken)
                     .param("bins", "10"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.result.time").isNotEmpty())
+            .andExpect(jsonPath("$.labels").isNotEmpty())
+            .andExpect(jsonPath("$.data").isNotEmpty())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
@@ -433,7 +434,8 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken)
                     .param("bins", "10"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.result.accuracy").isNotEmpty())
+            .andExpect(jsonPath("$.labels").isNotEmpty())
+            .andExpect(jsonPath("$.data").isNotEmpty())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
