@@ -19,10 +19,10 @@ public interface ResultRepository extends PagingAndSortingRepository<Result, Int
 
     Optional<Page<Result>> findAllResultByUserEmail(String email, Pageable pageable);
 
-    @Query(value="SELECT r.accuracy FROM result r", nativeQuery= true)
-    List<Double> findAllAccuracy();
+    @Query(value="SELECT r.accuracy FROM result r WHERE r.node_num = ?1", nativeQuery= true)
+    List<Double> findAllAccuracyByNodeNum(Integer nodeNum);
 
-    @Query(value="SELECT r.time FROM result r", nativeQuery= true)
-    List<Double> findAllTime();
+    @Query(value="SELECT r.time FROM result r WHERE r.node_num = ?1", nativeQuery= true)
+    List<Double> findAllTimeByNodeNum(Integer nodeNum);
 
 }

@@ -11,6 +11,8 @@ public interface ResultService {
 
   Result create(Result result, Principal principal);
 
+  Result update(Integer resultId, Result result, Principal principal);
+
   Result getLatestResult(Principal principal);
 
   boolean delete(Integer resultId, Principal principal);
@@ -19,8 +21,8 @@ public interface ResultService {
 
   Page<Result> fetchAll(Pageable pageable);
 
-  ResultDistriDto getAccuracyGraphData(Integer bins);
+  ResultDistriDto getAccuracyGraphData(Integer bins, Integer nodeNum);
 
-  ResultDistriDto getTimeGraphData(Integer bins);
+  ResultDistriDto getTimeGraphData(Integer bins, Integer nodeNum);
 
 }
