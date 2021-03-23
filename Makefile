@@ -1,7 +1,7 @@
 all:	stop run-db test stop-db build deploy
 
 test:
-	mvn clean install -Dmaven.test.skip=true
+	mvn clean install
 
 build:
 	cd infra && docker-compose build
