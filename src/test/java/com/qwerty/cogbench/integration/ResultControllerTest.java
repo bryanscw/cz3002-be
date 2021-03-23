@@ -192,7 +192,7 @@ public class ResultControllerTest {
 
   @Order(3)
   @Test
-  public void should_notGetAllUsers_ifNotAuthorized() throws Exception {
+  public void should_notGetPatients_ifNotAuthorized() throws Exception {
     mockMvc.perform(
             MockMvcRequestBuilders.get(
                     CONTEXT_PATH + "/result/patients")
@@ -209,7 +209,7 @@ public class ResultControllerTest {
 
   @Order(4)
   @Test
-  public void should_getAllUsers_ifAuthorized() throws Exception {
+  public void should_getPatients_ifAuthorized() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
             MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)

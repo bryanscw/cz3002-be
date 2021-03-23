@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to reject fetch accuracy graph data if parameters are invalid.
+
+== Reject fetch accuracy graph data if parameters are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/response-body.adoc[]
