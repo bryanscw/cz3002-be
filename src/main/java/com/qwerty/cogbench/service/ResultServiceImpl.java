@@ -1,7 +1,9 @@
 package com.qwerty.cogbench.service;
 
 import com.qwerty.cogbench.dto.ResultDistriDto;
+import com.qwerty.cogbench.exception.ForbiddenException;
 import com.qwerty.cogbench.exception.ResourceNotFoundException;
+import com.qwerty.cogbench.exception.UnauthorizedException;
 import com.qwerty.cogbench.model.Result;
 import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.repository.ResultRepository;
@@ -38,7 +40,13 @@ public class ResultServiceImpl implements ResultService {
   @Override
   public Result create(Result result, Principal principal) {
 
-    User userToFind = userRepository.findUserByEmail(principal.getName()).orElseThrow(() -> {
+    if (result.getUser().getEmail().equals(null)){
+      String errorMsg = "User of result is empty";
+      log.error(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
+    }
+
+    User userToFind = userRepository.findUserByEmail(result.getUser().getEmail()).orElseThrow(() -> {
       String errorMsg = String.format("User with email [%s] not found", principal.getName());
       log.error(errorMsg);
       throw new ResourceNotFoundException(errorMsg);
@@ -47,6 +55,57 @@ public class ResultServiceImpl implements ResultService {
     result.setUser(userToFind);
 
     return resultRepository.save(result);
+  }
+
+  @Override
+  public Result update(Integer resultId, Result result, Principal principal) {
+
+    User userToFind = userRepository.findUserByEmail(principal.getName()).orElseThrow(() -> {
+      String errorMsg = String.format("User with email [%s] not found", principal.getName());
+      log.error(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
+    });
+
+    log.info("User find ok");
+
+    Result resultToFind = resultRepository.findResultById(resultId).orElseThrow(() -> {
+      String errorMsg = String.format("Result with Id [%s] not found", resultId);
+      log.error(errorMsg);
+      throw new ResourceNotFoundException(errorMsg);
+    });
+
+    log.info("Result find ok");
+
+    if (resultToFind.getAccuracy() != null && resultToFind.getTime() != null){
+      String errorMsg = String.format("Result with Id [%s] cannot be updated", resultId);
+      log.error(errorMsg);
+      throw new ForbiddenException(errorMsg);
+    }
+
+    log.info("Result check ok");
+
+    if (userToFind.getRole().equals("ROLE_PATIENT") && !resultToFind.getUser().getEmail().equals(userToFind.getEmail())){
+      log.info("Inside");
+      String progressErrorMsg = String
+              .format("User with Id [%s] not authorized to update result for user with Id [%s]",
+                      resultToFind.getUser().getName(),
+                      userToFind.getName());
+      log.error(progressErrorMsg);
+      throw new UnauthorizedException(progressErrorMsg);
+    }
+
+    log.info("Auth check ok");
+
+    if (userToFind.getRole().equals("ROLE_DOCTOR")){
+      resultToFind.setNodeNum(result.getNodeNum());
+    } else{
+      resultToFind.setAccuracy(result.getAccuracy());
+      resultToFind.setTime(result.getTime());
+    }
+
+    log.info("Update check ok");
+
+    return resultRepository.save(resultToFind);
   }
 
   @Override
@@ -86,14 +145,16 @@ public class ResultServiceImpl implements ResultService {
   }
 
   @Override
-  public ResultDistriDto getAccuracyGraphData(Integer bins) {
-    List<Double> accuracies = resultRepository.findAllAccuracy();
+  public ResultDistriDto getAccuracyGraphData(Integer bins, Integer nodeNum) {
+    List<Double> accuracies = resultRepository.findAllAccuracyByNodeNum(nodeNum);
+    log.info(accuracies.toString());
     return buildResultDtriDto(accuracies, bins);
   }
 
   @Override
-  public ResultDistriDto getTimeGraphData(Integer bins) {
-    List<Double> times = resultRepository.findAllTime();
+  public ResultDistriDto getTimeGraphData(Integer bins, Integer nodeNum) {
+    List<Double> times = resultRepository.findAllTimeByNodeNum(nodeNum);
+    log.info(times.toString());
     return buildResultDtriDto(times, bins);
   }
 
@@ -116,5 +177,16 @@ public class ResultServiceImpl implements ResultService {
     }
 
     return new ResultDistriDto(labels, data);
+  }
+
+  private void doAuthCheck(Result result, User user){
+    if (user.getRole().equals("ROLE_PATIENT") && !user.equals(result.getUser())){
+      String progressErrorMsg = String
+              .format("User with Id [%s] not authorized to update result for user with Id [%s]",
+                      result.getUser().getName(),
+                      user.getName());
+      log.error(progressErrorMsg);
+      throw new UnauthorizedException(progressErrorMsg);
+    }
   }
 }

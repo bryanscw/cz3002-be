@@ -16,4 +16,6 @@ public interface UserService {
 
   Page<User> fetchAll(Pageable pageable);
 
+  Page<User> fetchAllPatients(Pageable pageable, String role);
+
 }

@@ -2,7 +2,9 @@ package com.qwerty.cogbench.controller;
 
 import com.qwerty.cogbench.dto.ResultDistriDto;
 import com.qwerty.cogbench.model.Result;
+import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.service.ResultService;
+import com.qwerty.cogbench.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,9 +30,25 @@ import java.security.Principal;
 public class ResultController {
 
   private final ResultService resultService;
+  private final UserService userService;
 
-  public ResultController(ResultService resultService) {
+  public ResultController(ResultService resultService, UserService userService) {
     this.resultService = resultService;
+    this.userService = userService;
+  }
+
+  /**
+   * Fetch all user results.
+   *
+   * @param pageable Pagination context
+   * @return Paginated result of all results
+   */
+  @RequestMapping(method = RequestMethod.GET, path = "/patients")
+  @Secured({"ROLE_DOCTOR"})
+  @ResponseStatus(HttpStatus.OK)
+  public Page<User> fetchAllPatients(Pageable pageable) {
+    log.info("Fetching all patients with pagination context: [{}]", pageable.toString());
+    return userService.fetchAllPatients(pageable, "ROLE_PATIENT");
   }
 
   /**
@@ -89,14 +107,34 @@ public class ResultController {
    * @return Created result
    */
   @RequestMapping(method = RequestMethod.POST, path = "/create")
-  @Secured({"ROLE_PATIENT"})
+  @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
   public Result createResult(
       @RequestBody Result result,
       Principal principal
   ) {
-    log.info("Creating result for user [{}]", principal.getName());
+    log.info("Creating result for user [{}] with user [{}]", result.getUser().getEmail(), principal.getName());
     return resultService.create(result, principal);
+  }
+
+  /**
+   * Update result.
+   *
+   * @param resultId Id of result to update
+   * @param result Result to be created
+   * @param principal Principal context containing information of the user submitting the request
+   * @return Created result
+   */
+  @RequestMapping(method = RequestMethod.POST, path = "/update/{resultId}")
+  @Secured({"ROLE_PATIENT", "ROLE_DOCTOR"})
+  @ResponseStatus(HttpStatus.OK)
+  public Result updateResult(
+          @PathVariable(value = "resultId") Integer resultId,
+          @RequestBody Result result,
+          Principal principal
+  ) {
+    log.info("Updating result with Id [{}] for user with Id [{}]", resultId, principal.getName());
+    return resultService.update(resultId, result, principal);
   }
 
   /**
@@ -123,22 +161,24 @@ public class ResultController {
   @ResponseStatus(HttpStatus.OK)
   @Secured({"ROLE_DOCTOR", "ROLE_PATIENT"})
   public ResultDistriDto getTimeGraphData(
-      @RequestParam(value = "bins", defaultValue="10") Integer bins
+      @RequestParam(value = "bins", defaultValue="10") Integer bins,
+      @RequestParam(value = "nodeNum", defaultValue="25") Integer nodeNum
   ) {
     log.info("Fetching graph data for result.time");
 
-    return resultService.getTimeGraphData(bins);
+    return resultService.getTimeGraphData(bins, nodeNum);
   }
 
   @RequestMapping(method = RequestMethod.GET, path = "/graph/accuracy")
   @ResponseStatus(HttpStatus.OK)
   @Secured({"ROLE_DOCTOR", "ROLE_PATIENT"})
   public ResultDistriDto getAccuracyGraphData(
-      @RequestParam(value = "bins", defaultValue="10") Integer bins
+      @RequestParam(value = "bins", defaultValue="10") Integer bins,
+      @RequestParam(value = "nodeNum", defaultValue="25") Integer nodeNum
   ) {
     log.info("Fetching graph data for result.accuracy");
 
-    return resultService.getAccuracyGraphData(bins);
+    return resultService.getAccuracyGraphData(bins, nodeNum);
   }
 
 

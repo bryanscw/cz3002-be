@@ -16,6 +16,7 @@ import com.qwerty.cogbench.mock.MockUserClass;
 import com.qwerty.cogbench.mock.MockUserConfigs;
 import com.qwerty.cogbench.model.Diagnosis;
 import com.qwerty.cogbench.model.Result;
+import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.repository.DiagnosisRepository;
 import com.qwerty.cogbench.repository.ResultRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -85,7 +86,11 @@ public class DiagnosisControllerTest {
     this.doctor.setName("name");
     this.doctor.setRole("ROLE_DOCTOR");
 
+    User user = new User();
+    user.setEmail(this.user.getEmail());
+
     this.result = new Result();
+    this.result.setUser(user);
     this.result.setAccuracy(78.9);
     this.result.setTime(78.1);
 
@@ -146,8 +151,8 @@ public class DiagnosisControllerTest {
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-            .param("username", this.user.getEmail())
-            .param("password", this.user.getPass())
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
             .param("grant_type", "password"))
         .andExpect(status().isOk())
         .andReturn();

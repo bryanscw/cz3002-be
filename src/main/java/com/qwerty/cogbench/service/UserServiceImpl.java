@@ -85,6 +85,13 @@ public class UserServiceImpl implements UserService {
     return userRepository.findAll(pageable);
   }
 
+  @Override
+  public Page<User> fetchAllPatients(Pageable pageable, String role) {
+    return userRepository.findAllByRole(pageable, role).orElseThrow(
+          () -> new ResourceNotFoundException(
+                  String.format("Users with role [%s] not found", role)));
+  }
+
   /**
    * Checks if a password is Bcrypt crypted. It will Bcrypt encrypt the password if it is not.
    *

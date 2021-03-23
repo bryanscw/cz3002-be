@@ -150,5 +150,4 @@ public class DiagnosisServiceImpl implements DiagnosisService {
       throw new UnauthorizedException(progressErrorMsg);
     }
   }
-
 }

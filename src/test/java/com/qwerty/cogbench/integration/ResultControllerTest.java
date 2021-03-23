@@ -17,6 +17,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.qwerty.cogbench.mock.MockUserClass;
 import com.qwerty.cogbench.mock.MockUserConfigs;
 import com.qwerty.cogbench.model.Result;
+import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.repository.ResultRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -80,9 +81,12 @@ public class ResultControllerTest {
     this.doctor.setName("name");
     this.doctor.setRole("ROLE_DOCTOR");
 
+    User resultUser = new User();
+    resultUser.setEmail(this.user.getEmail());
+
     this.result = new Result();
-    this.result.setAccuracy(78.9);
-    this.result.setTime(78.1);
+    this.result.setUser(resultUser);
+    this.result.setNodeNum(25);
   }
 
   public Result getPersistentResult() {
@@ -148,8 +152,8 @@ public class ResultControllerTest {
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header(HttpHeaders.AUTHORIZATION,
                 "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-            .param("username", this.user.getEmail())
-            .param("password", this.user.getPass())
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
             .param("grant_type", "password"))
         .andExpect(status().isOk())
         .andReturn();
@@ -181,12 +185,65 @@ public class ResultControllerTest {
 
     // Check if data in `Result` object is persisted into the database
     Result persistentResult = getPersistentResult();
-    assertEquals(this.result.getAccuracy(), persistentResult.getAccuracy());
-    assertEquals(this.result.getTime(), persistentResult.getTime());
+    assertEquals(persistentResult.getUser().getEmail(), this.user.getEmail());
+    assertEquals(persistentResult.getUser().getRole(), this.user.getRole());
     assertNotNull(persistentResult.getId());
   }
 
+  @Order(3)
+  @Test
+  public void should_notGetAllUsers_ifNotAuthorized() throws Exception {
+    mockMvc.perform(
+            MockMvcRequestBuilders.get(
+                    CONTEXT_PATH + "/result/patients")
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(user("candidate1@test.com")))
+            .andExpect(status().isForbidden())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                    )
+            );
+  }
+
   @Order(4)
+  @Test
+  public void should_getAllUsers_ifAuthorized() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.doctor.getEmail())
+                    .param("password", this.doctor.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.get(
+                    CONTEXT_PATH + "/result/patients")
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content", hasSize(1)))
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+  }
+
+  @Order(5)
   @Test
   public void should_notGetLatestUserResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
@@ -203,7 +260,7 @@ public class ResultControllerTest {
         );
   }
 
-  @Order(5)
+  @Order(6)
   @Test
   public void should_getLatestUserResult_ifAuthorized() throws Exception {
 
@@ -241,7 +298,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(6)
+  @Order(7)
   @Test
   public void should_notGetAllUserResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
@@ -255,7 +312,7 @@ public class ResultControllerTest {
             preprocessResponse(prettyPrint())));
   }
 
-  @Order(7)
+  @Order(8)
   @Test
   public void should_getAllUserResult_ifAuthorized() throws Exception {
 
@@ -290,7 +347,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(8)
+  @Order(9)
   @Test
   @WithUserDetails("candidate1@test.com")
   public void should_notAllowFetchAllResult_ifNotAuthorized() throws Exception {
@@ -304,7 +361,7 @@ public class ResultControllerTest {
             preprocessResponse(prettyPrint())));
   }
 
-  @Order(9)
+  @Order(10)
   @Test
   public void should_allowFetchAllResult_ifAuthorized() throws Exception {
 
@@ -338,7 +395,164 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(10)
+  @Order(11)
+  @Test
+  public void should_notUpdateResult_ifNotAuthorized() throws Exception {
+    // Create user
+    String resultJson = new ObjectMapper().writeValueAsString(this.result);
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/update/" + getPersistentResult().getId())
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(resultJson))
+            .andExpect(status().isUnauthorized())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+  }
+
+  @Order(12)
+  @Test
+  public void should_updateResultNodeNum_ifDoctor() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.doctor.getEmail())
+                    .param("password", this.doctor.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    this.result.setNodeNum(10);
+
+    // Create user
+    String resultJson = new ObjectMapper().writeValueAsString(this.result);
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .content(resultJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+
+    // Check if data in `Result` object is persisted into the database
+    Result persistentResult = getPersistentResult();
+    assertEquals(this.result.getAccuracy(), persistentResult.getAccuracy());
+    assertEquals(this.result.getTime(), persistentResult.getTime());
+    assertNotNull(persistentResult.getId());
+  }
+
+  @Order(13)
+  @Test
+  public void should_updateResultTimeAndAccuracy_ifPatient() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.user.getEmail())
+                    .param("password", this.user.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    this.result.setAccuracy(45.1);
+    this.result.setTime(99.1);
+
+    // Create user
+    String resultJson = new ObjectMapper().writeValueAsString(this.result);
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .content(resultJson))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+
+    // Check if data in `Result` object is persisted into the database
+    Result persistentResult = getPersistentResult();
+    assertEquals(this.result.getAccuracy(), persistentResult.getAccuracy());
+    assertEquals(this.result.getTime(), persistentResult.getTime());
+    assertNotNull(persistentResult.getId());
+  }
+
+  @Order(14)
+  @Test
+  public void should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.doctor.getEmail())
+                    .param("password", this.doctor.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    this.result.setNodeNum(45);
+    // Create user
+    String resultJson = new ObjectMapper().writeValueAsString(this.result);
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.post(
+                    String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken)
+                    .content(resultJson))
+            .andExpect(status().isForbidden())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+  }
+
+  @Order(15)
   @Test
   public void should_notGetTimeGraphData_ifNotAuthorized() throws Exception {
 
@@ -347,14 +561,32 @@ public class ResultControllerTest {
                     CONTEXT_PATH + "/result/graph/time")
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .param("bins", "10"))
+                    .param("bins", "10")
+                    .param("nodeNum", "25"))
             .andExpect(status().isUnauthorized())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(11)
+  @Order(16)
+  @Test
+  public void should_notGetTimeGraphData_ifInvalidParam() throws Exception {
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.get(
+                    CONTEXT_PATH + "/result/graph/time")
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("bins", "none")
+                    .param("nodeNum", "25"))
+            .andExpect(status().isBadRequest())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+  }
+
+  @Order(17)
   @Test
   public void should_getTimeGraphData_ifAuthorized() throws Exception {
 
@@ -374,11 +606,12 @@ public class ResultControllerTest {
 
     mockMvc.perform(
             MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/graph/time", this.user.getEmail())
+                    CONTEXT_PATH + "/result/graph/time")
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", "Bearer " + accessToken)
-                    .param("bins", "10"))
+                    .param("bins", "10")
+                    .param("nodeNum", "25"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.labels").isNotEmpty())
             .andExpect(jsonPath("$.data").isNotEmpty())
@@ -392,7 +625,7 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(12)
+  @Order(18)
   @Test
   public void should_notGetAccuracyGraphData_ifNotAuthorized() throws Exception {
 
@@ -401,14 +634,32 @@ public class ResultControllerTest {
                     CONTEXT_PATH + "/result/graph/accuracy")
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .param("bins", "10"))
+                    .param("bins", "10")
+                    .param("nodeNum", "25"))
             .andExpect(status().isUnauthorized())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(13)
+  @Order(19)
+  @Test
+  public void should_notGetAccuracyGraphData_ifInvalidParam() throws Exception {
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.get(
+                    CONTEXT_PATH + "/result/graph/accuracy")
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .param("bins", "none")
+                    .param("nodeNum", "25"))
+            .andExpect(status().isBadRequest())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+  }
+
+  @Order(20)
   @Test
   public void should_getAccuracyGraphData_ifAuthorized() throws Exception {
 
@@ -428,11 +679,12 @@ public class ResultControllerTest {
 
     mockMvc.perform(
             MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/graph/accuracy", this.user.getEmail())
+                    CONTEXT_PATH + "/result/graph/accuracy")
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", "Bearer " + accessToken)
-                    .param("bins", "10"))
+                    .param("bins", "10")
+                    .param("nodeNum", "25"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.labels").isNotEmpty())
             .andExpect(jsonPath("$.data").isNotEmpty())
@@ -446,7 +698,7 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(14)
+  @Order(21)
   @Test
   @WithUserDetails("candidate1@test.com")
   public void should_notAllowDeleteResult_ifNotAuthorized() throws Exception {
@@ -465,7 +717,7 @@ public class ResultControllerTest {
             preprocessResponse(prettyPrint())));
   }
 
-  @Order(15)
+  @Order(22)
   @Test
   public void should_allowDeleteResult_ifAuthorized() throws Exception {
 
@@ -504,7 +756,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(16)
+  @Order(23)
   @Test
   public void should_notAllowDeleteResult_ifNotExist() throws Exception {
 

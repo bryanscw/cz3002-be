@@ -40,4 +40,8 @@ public class Result extends Auditable<String> {
   @Setter
   private Double time;
 
+  @Getter
+  @Setter
+  private Integer nodeNum;
+
 }
