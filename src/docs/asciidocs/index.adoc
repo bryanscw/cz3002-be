@@ -462,6 +462,46 @@ include::{snippets}/should_createResult_ifAuthorized/request-body.adoc[]
 .Response sample
 include::{snippets}/should_createResult_ifAuthorized/response-body.adoc[]
 
+=== Reject fetch patient list if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetPatients_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetPatients_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetPatients_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetPatients_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetPatients_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetPatients_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch patient list if credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_getPatients_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_getPatients_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_getPatients_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_getPatients_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_getPatients_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_getPatients_ifAuthorized/response-body.adoc[]
+
 === Reject fetch latest result if credentials are invalid
 
 .Request sample with curl
@@ -582,6 +622,86 @@ include::{snippets}/should_allowFetchAllResult_ifAuthorized/request-body.adoc[]
 .Response sample
 include::{snippets}/should_allowFetchAllResult_ifAuthorized/response-body.adoc[]
 
+=== Reject update result if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notUpdateResult_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notUpdateResult_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notUpdateResult_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notUpdateResult_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notUpdateResult_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notUpdateResult_ifNotAuthorized/response-body.adoc[]
+
+=== Allow update node number if role is doctor and time and accuracy is null
+
+.Request sample with curl
+include::{snippets}/should_updateResultNodeNum_ifDoctor/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_updateResultNodeNum_ifDoctor/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_updateResultNodeNum_ifDoctor/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_updateResultNodeNum_ifDoctor/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_updateResultNodeNum_ifDoctor/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_updateResultNodeNum_ifDoctor/response-body.adoc[]
+
+=== Allow update time and accuracy if role is patient.
+
+.Request sample with curl
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/response-body.adoc[]
+
+=== Reject update result node number if role is doctor and time and accuracy is not null
+
+.Request sample with curl
+include::{snippets}/should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull/response-body.adoc[]
+
 === Reject fetch time graph data if credentials are invalid
 
 .Request sample with curl
@@ -601,6 +721,26 @@ include::{snippets}/should_notGetTimeGraphData_ifNotAuthorized/request-body.adoc
 
 .Response sample
 include::{snippets}/should_notGetTimeGraphData_ifNotAuthorized/response-body.adoc[]
+
+=== Reject fetch time graph data if parameters are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetTimeGraphData_ifInvalidParam/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetTimeGraphData_ifInvalidParam/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetTimeGraphData_ifInvalidParam/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetTimeGraphData_ifInvalidParam/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetTimeGraphData_ifInvalidParam/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetTimeGraphData_ifInvalidParam/response-body.adoc[]
 
 === Allow fetch time graph data if credentials are valid
 
@@ -641,6 +781,26 @@ include::{snippets}/should_notGetAccuracyGraphData_ifNotAuthorized/request-body.
 
 .Response sample
 include::{snippets}/should_notGetAccuracyGraphData_ifNotAuthorized/response-body.adoc[]
+
+=== Reject fetch accuracy graph data if parameters are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetAccuracyGraphData_ifInvalidParam/response-body.adoc[]
 
 === Allow fetch accuracy graph data if credentials are valid
 

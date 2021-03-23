@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to allow update node number if role is doctor and time and accuracy is null.
+
+== Allow update node number if role is doctor and time and accuracy is null
+
+.Request sample with curl
+include::{snippets}/should_updateResultNodeNum_ifDoctor/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_updateResultNodeNum_ifDoctor/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_updateResultNodeNum_ifDoctor/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_updateResultNodeNum_ifDoctor/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_updateResultNodeNum_ifDoctor/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_updateResultNodeNum_ifDoctor/response-body.adoc[]

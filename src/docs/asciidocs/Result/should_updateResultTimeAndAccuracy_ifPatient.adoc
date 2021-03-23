@@ -1,0 +1,29 @@
+= Getting started with CogBench API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toc-title: Table of Content
+:toclevels: 4
+
+This is the documentation of cogbench API to allow update time and accuracy if role is patient.
+
+== Allow update time and accuracy if role is patient.
+
+.Request sample with curl
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_updateResultTimeAndAccuracy_ifPatient/response-body.adoc[]
