@@ -16,10 +16,10 @@ INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('doct
 -- Username: doctor2@test.com, Password: doctor02
 INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('doctor2@test.com', '$2y$12$oK0EgHJ5Ya.pIoAwy77kaeTFfec6OW0N/NyVPPQY40AfLvwNF36Oi', 'ROLE_DOCTOR', 'doctor2', '1984-09-11', '0');
 
-INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, user_id) VALUES (1, 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 78.9, 54.2, 'candidate1@test.com');
-INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, user_id) VALUES (2, 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 85.1, 63.8, 'candidate1@test.com');
-INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, user_id) VALUES (3, 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 95.8, 78.1, 'candidate1@test.com');
-INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, user_id) VALUES (4, 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 99.2, 88.1, 'candidate1@test.com');
+INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, node_num, user_id) VALUES (1, 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 78.9, 54.2, 15, 'candidate1@test.com');
+INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, node_num, user_id) VALUES (2, 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 85.1, 63.8, 15, 'candidate1@test.com');
+INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, node_num, user_id) VALUES (3, 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 95.8, 78.1, 15, 'candidate1@test.com');
+INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, node_num, user_id) VALUES (4, 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 'candidate1@test.com', '2021-02-16 02:49:40.502000000', 99.2, 88.1, 15, 'candidate1@test.com');
 
 
 INSERT INTO qwerty.diagnosis (id, created_by, created_date, last_modified_by, last_modified_date, description, label, user_id, result_id) VALUES (1, 'doctor2@test.com', '2021-02-16 02:54:29.079000000', 'doctor2@test.com', '2021-02-16 02:54:29.079000000', 'Sample Description', 'Sample Label', 'doctor2@test.com', 1);
