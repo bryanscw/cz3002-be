@@ -141,7 +141,7 @@ public class ResultController {
    * @param principal Principal context containing information of the user submitting the request
    * @return Created result
    */
-  @RequestMapping(method = RequestMethod.POST, path = "/{resultId}")
+  @RequestMapping(method = RequestMethod.GET, path = "/{resultId}")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
   public Result fetchResult(
