@@ -462,6 +462,86 @@ include::{snippets}/should_createResult_ifAuthorized/request-body.adoc[]
 .Response sample
 include::{snippets}/should_createResult_ifAuthorized/response-body.adoc[]
 
+=== Reject fetch all user's result if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetAPatientsResults_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetAPatientsResults_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetAPatientsResults_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetAPatientsResults_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetAPatientsResults_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetAPatientsResults_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch all user's result if role is doctor and credentials are valid
+
+.Request sample with curl
+include::{snippets}/should_getAPatientsResults_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_getAPatientsResults_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_getAPatientsResults_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_getAPatientsResults_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_getAPatientsResults_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_getAPatientsResults_ifAuthorized/response-body.adoc[]
+
+=== Reject fetch a user result if credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_notGetAResult_ifNotAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notGetAResult_ifNotAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notGetAResult_ifNotAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notGetAResult_ifNotAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notGetAResult_ifNotAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notGetAResult_ifNotAuthorized/response-body.adoc[]
+
+=== Allow fetch a user result if role is doctor and credentials are invalid
+
+.Request sample with curl
+include::{snippets}/should_getAResult_ifAuthorized/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_getAResult_ifAuthorized/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_getAResult_ifAuthorized/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_getAResult_ifAuthorized/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_getAResult_ifAuthorized/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_getAResult_ifAuthorized/response-body.adoc[]
+
 === Reject fetch patient list if credentials are invalid
 
 .Request sample with curl
