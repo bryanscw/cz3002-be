@@ -252,7 +252,7 @@ public class ResultControllerTest {
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
                     .with(user("candidate1@test.com")))
-            .andExpect(status().isUnauthorized())
+            .andExpect(status().isForbidden())
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())
