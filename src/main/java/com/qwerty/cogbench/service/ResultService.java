@@ -23,7 +23,7 @@ public interface ResultService {
 
   Page<Result> getHistory(Pageable pageable, Principal principal);
 
-  Page<Result> fetchAll(Pageable pageable);
+  Page<Result> fetchAll();
 
   ResultDistriDto getAccuracyGraphData(Integer bins, Integer nodeNum);
 

@@ -71,15 +71,14 @@ public class ResultController {
   /**
    * Fetch all user results.
    *
-   * @param pageable Pagination context
    * @return Paginated result of all results
    */
   @RequestMapping(method = RequestMethod.GET, path = "/")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public Page<Result> fetchAllResults(Pageable pageable) {
-    log.info("Fetching all results with pagination context: [{}]", pageable.toString());
-    return resultService.fetchAll(pageable);
+  public Page<Result> fetchAllResults() {
+    log.info("Fetching all results");
+    return resultService.fetchAll();
   }
 
   /**
