@@ -1,8 +1,8 @@
 package com.qwerty.cogbench.service;
 
 import com.qwerty.cogbench.model.User;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -14,8 +14,8 @@ public interface UserService {
 
   User get(String email);
 
-  Iterable<User> fetchAll();
+  List<User> fetchAll();
 
-  Page<User> fetchAllPatients(Pageable pageable, String role);
+  List<User> fetchAllPatients(String role);
 
 }

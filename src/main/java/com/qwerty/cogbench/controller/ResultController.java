@@ -6,8 +6,6 @@ import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.service.ResultService;
 import com.qwerty.cogbench.service.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -40,44 +39,42 @@ public class ResultController {
   /**
    * Fetch all user results.
    *
-   * @param pageable Pagination context
-   * @return Paginated result of all results
+   * @param principal Principal context containing information of the user submitting the request
+   * @return Listed result of all results
    */
   @RequestMapping(method = RequestMethod.GET, path = "/patients")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public Page<User> fetchAllPatients(Pageable pageable) {
-    log.info("Fetching all patients with pagination context: [{}]", pageable.toString());
-    return userService.fetchAllPatients(pageable, "ROLE_PATIENT");
+  public List<User> fetchAllPatients(Principal principal) {
+    log.info("Fetching all patients using user with Id [{}]", principal.getName());
+    return userService.fetchAllPatients("ROLE_PATIENT");
   }
 
   /**
    * Fetch a user's results.
    *
-   * @param pageable Pagination context
    * @return Paginated result of all results
    */
   @RequestMapping(method = RequestMethod.GET, path = "/patients/{userEmail}")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public Page<Result> fetchPatientResults(
-          Pageable pageable,
+  public List<Result> fetchPatientResults(
           @PathVariable(value = "userEmail") String userEmail) {
-    log.info("Fetching results of patient with Id [{}] with pagination context: [{}]",
-            userEmail, pageable.toString());
-    return resultService.fetchResultsWithUserEmail(pageable, userEmail);
+    log.info("Fetching results of patient with Id [{}]", userEmail);
+    return resultService.fetchResultsWithUserEmail(userEmail);
   }
 
   /**
    * Fetch all user results.
    *
+   * @param principal Principal context containing information of the user submitting the request
    * @return Paginated result of all results
    */
   @RequestMapping(method = RequestMethod.GET, path = "/")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public Iterable<Result> fetchAllResults() {
-    log.info("Fetching all results");
+  public List<Result> fetchAllResults(Principal principal) {
+    log.info("Fetching all results using user with Id [{}]", principal.getName());
     return resultService.fetchAll();
   }
 
@@ -100,19 +97,17 @@ public class ResultController {
   /**
    * Get result.
    *
-   * @param pageable       Pagination context
    * @param principal Principal context containing information of the user submitting the request
    * @return Result
    */
   @RequestMapping(method = RequestMethod.POST, path = "/me")
   @Secured({"ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
-  public Page<Result> fetchAllUserResult(
-      Pageable pageable,
+  public List<Result> fetchAllUserResult(
       Principal principal
   ) {
     log.info("Getting all result for user [{}]", principal.getName());
-    return resultService.getHistory(pageable, principal);
+    return resultService.getHistory(principal);
   }
 
   /**

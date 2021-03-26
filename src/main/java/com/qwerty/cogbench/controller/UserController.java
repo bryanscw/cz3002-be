@@ -3,9 +3,9 @@ package com.qwerty.cogbench.controller;
 import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.service.UserService;
 import java.security.Principal;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
@@ -54,7 +54,7 @@ public class UserController {
   @RequestMapping(method = RequestMethod.GET, path = "/")
   @Secured({"ROLE_ADMIN"})
   @ResponseStatus(HttpStatus.OK)
-  public Iterable<User> fetchAllUsers() {
+  public List<User> fetchAllUsers() {
     log.info("Fetching all user details");
     return userService.fetchAll();
   }

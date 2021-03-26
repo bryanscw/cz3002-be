@@ -15,8 +15,6 @@ import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -53,13 +51,13 @@ public class ResultServiceImpl implements ResultService {
   }
 
   @Override
-  public Iterable<Result> fetchAll() {
+  public List<Result> fetchAll() {
     return resultRepository.findAll();
   }
 
   @Override
-  public Page<Result> fetchResultsWithUserEmail(Pageable pageable, String userEmail){
-    return resultRepository.findAllResultByUserEmail(userEmail, pageable)
+  public List<Result> fetchResultsWithUserEmail(String userEmail){
+    return resultRepository.findResultByUserEmail(userEmail)
             .orElseThrow(() -> {
               String errorMsg = String.format("User with email [%s] not found", userEmail);
               log.error(errorMsg);
@@ -149,9 +147,9 @@ public class ResultServiceImpl implements ResultService {
                 String.format("User with email [%s] not found", principal.getName())));
   }
 
-  public Page<Result> getHistory(Pageable pageable, Principal principal) {
+  public List<Result> getHistory(Principal principal) {
 
-    return resultRepository.findAllResultByUserEmail(principal.getName(), pageable).orElseThrow(
+    return resultRepository.findResultByUserEmail(principal.getName()).orElseThrow(
         () -> new ResourceNotFoundException(
             String.format("Results for user [%s] not found", principal.getName())));
   }
@@ -177,13 +175,13 @@ public class ResultServiceImpl implements ResultService {
 
   @Override
   public ResultDistriDto getAccuracyGraphData(Integer bins, Integer nodeNum) {
-    List<Double> accuracies = resultRepository.findAllAccuracyByNodeNum(nodeNum);
+    List<Double> accuracies = resultRepository.findAccuracyByNodeNum(nodeNum);
     return buildResultDtriDto(accuracies, bins);
   }
 
   @Override
   public ResultDistriDto getTimeGraphData(Integer bins, Integer nodeNum) {
-    List<Double> times = resultRepository.findAllTimeByNodeNum(nodeNum);
+    List<Double> times = resultRepository.findTimeByNodeNum(nodeNum);
     return buildResultDtriDto(times, bins);
   }
 }
