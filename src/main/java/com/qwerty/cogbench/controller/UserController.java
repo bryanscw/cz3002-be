@@ -49,15 +49,14 @@ public class UserController {
   /**
    * Fetch all user details.
    *
-   * @param pageable Pagination context
    * @return Paginated result of all users
    */
   @RequestMapping(method = RequestMethod.GET, path = "/")
   @Secured({"ROLE_ADMIN"})
   @ResponseStatus(HttpStatus.OK)
-  public Page<User> fetchAllUsers(Pageable pageable) {
-    log.info("Fetching all user details with pagination context: [{}]", pageable.toString());
-    return userService.fetchAll(pageable);
+  public Iterable<User> fetchAllUsers() {
+    log.info("Fetching all user details");
+    return userService.fetchAll();
   }
 
   /**

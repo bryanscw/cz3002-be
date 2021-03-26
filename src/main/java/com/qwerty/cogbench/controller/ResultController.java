@@ -76,7 +76,7 @@ public class ResultController {
   @RequestMapping(method = RequestMethod.GET, path = "/")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public Page<Result> fetchAllResults() {
+  public Iterable<Result> fetchAllResults() {
     log.info("Fetching all results");
     return resultService.fetchAll();
   }

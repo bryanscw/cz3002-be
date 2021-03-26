@@ -53,8 +53,8 @@ public class ResultServiceImpl implements ResultService {
   }
 
   @Override
-  public Page<Result> fetchAll() {
-    return (Page<Result>) resultRepository.findAll();
+  public Iterable<Result> fetchAll() {
+    return resultRepository.findAll();
   }
 
   @Override
