@@ -60,7 +60,7 @@ public class ResultController {
   @RequestMapping(method = RequestMethod.GET, path = "/patients/{userEmail}")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public Page<Result> fetchPatient(
+  public Page<Result> fetchPatientResults(
           Pageable pageable,
           @PathVariable(value = "userEmail") String userEmail) {
     log.info("Fetching results of patient with Id [{}] with pagination context: [{}]",
@@ -142,7 +142,7 @@ public class ResultController {
    * @return Created result
    */
   @RequestMapping(method = RequestMethod.GET, path = "/{resultId}")
-  @Secured({"ROLE_DOCTOR"})
+  @Secured({"ROLE_DOCTOR", "ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
   public Result fetchResult(
           @PathVariable(value = "resultId") Integer resultId,
