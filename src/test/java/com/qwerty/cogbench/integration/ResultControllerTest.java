@@ -245,6 +245,59 @@ public class ResultControllerTest {
 
   @Order(5)
   @Test
+  public void should_notGetAPatientsResult_ifNotAuthorized() throws Exception {
+    mockMvc.perform(
+            MockMvcRequestBuilders.get(
+                    CONTEXT_PATH + "/result/patients/" + this.user.getEmail())
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .with(user("candidate1@test.com")))
+            .andExpect(status().isUnauthorized())
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())
+                    )
+            );
+  }
+
+  @Order(6)
+  @Test
+  public void should_getAPatientsResult_ifAuthorized() throws Exception {
+
+    MvcResult mvcResult = this.mockMvc.perform(
+            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION,
+                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+                    .param("username", this.doctor.getEmail())
+                    .param("password", this.doctor.getPass())
+                    .param("grant_type", "password"))
+            .andExpect(status().isOk())
+            .andReturn();
+
+    String accessToken = JsonPath
+            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.get(
+                    CONTEXT_PATH + "/result/patients/" + this.user.getEmail())
+                    .contextPath(CONTEXT_PATH)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.content", hasSize(1)))
+            .andDo(document("{methodName}",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint())));
+
+    mockMvc.perform(
+            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .header("Authorization", "Bearer " + accessToken));
+  }
+
+  @Order(7)
+  @Test
   public void should_notGetLatestUserResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
         MockMvcRequestBuilders.post(
@@ -260,7 +313,7 @@ public class ResultControllerTest {
         );
   }
 
-  @Order(6)
+  @Order(8)
   @Test
   public void should_getLatestUserResult_ifAuthorized() throws Exception {
 
@@ -298,7 +351,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(7)
+  @Order(9)
   @Test
   public void should_notGetAllUserResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
@@ -312,7 +365,7 @@ public class ResultControllerTest {
             preprocessResponse(prettyPrint())));
   }
 
-  @Order(8)
+  @Order(10)
   @Test
   public void should_getAllUserResult_ifAuthorized() throws Exception {
 
@@ -347,7 +400,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(9)
+  @Order(11)
   @Test
   @WithUserDetails("candidate1@test.com")
   public void should_notAllowFetchAllResult_ifNotAuthorized() throws Exception {
@@ -361,7 +414,7 @@ public class ResultControllerTest {
             preprocessResponse(prettyPrint())));
   }
 
-  @Order(10)
+  @Order(12)
   @Test
   public void should_allowFetchAllResult_ifAuthorized() throws Exception {
 
@@ -395,7 +448,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(11)
+  @Order(13)
   @Test
   public void should_notUpdateResult_ifNotAuthorized() throws Exception {
     // Create user
@@ -411,7 +464,7 @@ public class ResultControllerTest {
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(12)
+  @Order(14)
   @Test
   public void should_updateResultNodeNum_ifDoctor() throws Exception {
 
@@ -461,7 +514,7 @@ public class ResultControllerTest {
     assertNotNull(persistentResult.getId());
   }
 
-  @Order(13)
+  @Order(15)
   @Test
   public void should_updateResultTimeAndAccuracy_ifPatient() throws Exception {
 
@@ -512,7 +565,7 @@ public class ResultControllerTest {
     assertNotNull(persistentResult.getId());
   }
 
-  @Order(14)
+  @Order(16)
   @Test
   public void should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull() throws Exception {
 
@@ -552,7 +605,7 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(15)
+  @Order(17)
   @Test
   public void should_notGetTimeGraphData_ifNotAuthorized() throws Exception {
 
@@ -569,7 +622,7 @@ public class ResultControllerTest {
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(16)
+  @Order(18)
   @Test
   public void should_notGetTimeGraphData_ifInvalidParam() throws Exception {
 
@@ -586,7 +639,7 @@ public class ResultControllerTest {
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(17)
+  @Order(19)
   @Test
   public void should_getTimeGraphData_ifAuthorized() throws Exception {
 
@@ -625,7 +678,7 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(18)
+  @Order(20)
   @Test
   public void should_notGetAccuracyGraphData_ifNotAuthorized() throws Exception {
 
@@ -642,7 +695,7 @@ public class ResultControllerTest {
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(19)
+  @Order(21)
   @Test
   public void should_notGetAccuracyGraphData_ifInvalidParam() throws Exception {
 
@@ -659,7 +712,7 @@ public class ResultControllerTest {
                     preprocessResponse(prettyPrint())));
   }
 
-  @Order(20)
+  @Order(22)
   @Test
   public void should_getAccuracyGraphData_ifAuthorized() throws Exception {
 
@@ -698,7 +751,7 @@ public class ResultControllerTest {
                     .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(21)
+  @Order(23)
   @Test
   @WithUserDetails("candidate1@test.com")
   public void should_notAllowDeleteResult_ifNotAuthorized() throws Exception {
@@ -717,7 +770,7 @@ public class ResultControllerTest {
             preprocessResponse(prettyPrint())));
   }
 
-  @Order(22)
+  @Order(24)
   @Test
   public void should_allowDeleteResult_ifAuthorized() throws Exception {
 
@@ -756,7 +809,7 @@ public class ResultControllerTest {
             .header("Authorization", "Bearer " + accessToken));
   }
 
-  @Order(23)
+  @Order(25)
   @Test
   public void should_notAllowDeleteResult_ifNotExist() throws Exception {
 
