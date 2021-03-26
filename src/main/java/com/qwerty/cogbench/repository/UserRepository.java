@@ -4,9 +4,10 @@ import com.qwerty.cogbench.model.User;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.repository.CrudRepository;
 
-public interface UserRepository extends CrudRepository<User, String> {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, String> {
 
   Optional<User> findUserByEmail(String email);
 

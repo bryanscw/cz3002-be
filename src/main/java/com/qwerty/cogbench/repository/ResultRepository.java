@@ -2,14 +2,15 @@ package com.qwerty.cogbench.repository;
 
 import com.qwerty.cogbench.model.Result;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface ResultRepository extends CrudRepository<Result, Integer> {
+public interface ResultRepository extends JpaRepository<Result, Integer> {
 
     Optional<Result> findFirstByUserEmailOrderByLastModifiedDateDesc(String email);
 
