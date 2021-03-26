@@ -2,8 +2,8 @@ package com.qwerty.cogbench.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import javax.validation.constraints.Min;
 
 import javax.persistence.*;
 
@@ -42,6 +42,7 @@ public class Result extends Auditable<String> {
 
   @Getter
   @Setter
+  @Min(value = 1)
   private Integer nodeNum;
 
   // Result is the non-owning side

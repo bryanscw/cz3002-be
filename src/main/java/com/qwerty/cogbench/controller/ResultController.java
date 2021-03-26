@@ -52,6 +52,23 @@ public class ResultController {
   }
 
   /**
+   * Fetch a user's results.
+   *
+   * @param pageable Pagination context
+   * @return Paginated result of all results
+   */
+  @RequestMapping(method = RequestMethod.GET, path = "/patients/{userEmail}")
+  @Secured({"ROLE_DOCTOR"})
+  @ResponseStatus(HttpStatus.OK)
+  public Page<Result> fetchPatientResults(
+          Pageable pageable,
+          @PathVariable(value = "userEmail") String userEmail) {
+    log.info("Fetching results of patient with Id [{}] with pagination context: [{}]",
+            userEmail, pageable.toString());
+    return resultService.fetchResultsWithUserEmail(pageable, userEmail);
+  }
+
+  /**
    * Fetch all user results.
    *
    * @param pageable Pagination context
@@ -115,6 +132,24 @@ public class ResultController {
   ) {
     log.info("Creating result for user [{}] with user [{}]", result.getUser().getEmail(), principal.getName());
     return resultService.create(result, principal);
+  }
+
+  /**
+   * Update result.
+   *
+   * @param resultId Id of result to update
+   * @param principal Principal context containing information of the user submitting the request
+   * @return Created result
+   */
+  @RequestMapping(method = RequestMethod.GET, path = "/{resultId}")
+  @Secured({"ROLE_DOCTOR", "ROLE_PATIENT"})
+  @ResponseStatus(HttpStatus.OK)
+  public Result fetchResult(
+          @PathVariable(value = "resultId") Integer resultId,
+          Principal principal
+  ) {
+    log.info("Fetching result with Id [{}] for user with Id [{}]", resultId, principal.getName());
+    return resultService.fetch(resultId);
   }
 
   /**

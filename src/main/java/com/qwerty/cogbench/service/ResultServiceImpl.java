@@ -58,6 +58,16 @@ public class ResultServiceImpl implements ResultService {
   }
 
   @Override
+  public Page<Result> fetchResultsWithUserEmail(Pageable pageable, String userEmail){
+    return resultRepository.findAllResultByUserEmail(userEmail, pageable)
+            .orElseThrow(() -> {
+              String errorMsg = String.format("User with email [%s] not found", userEmail);
+              log.error(errorMsg);
+              throw new ResourceNotFoundException(errorMsg);
+            });
+  }
+
+  @Override
   public Result create(Result result, Principal principal) {
 
     if (result.getUser().getEmail().equals(null)) {
@@ -76,6 +86,16 @@ public class ResultServiceImpl implements ResultService {
     result.setUser(userToFind);
 
     return resultRepository.save(result);
+  }
+
+  @Override
+  public Result fetch(Integer resultId) {
+    return resultRepository.findResultById(resultId)
+            .orElseThrow(() -> {
+              String errorMsg = String.format("Result with Id [%s] not found", resultId);
+              log.error(errorMsg);
+              throw new ResourceNotFoundException(errorMsg);
+            });
   }
 
   @Override

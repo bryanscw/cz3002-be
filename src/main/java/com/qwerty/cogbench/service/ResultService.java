@@ -13,9 +13,13 @@ public interface ResultService {
 
   Result update(Integer resultId, Result result, Principal principal);
 
+  Result fetch(Integer resultId);
+
   Result getLatestResult(Principal principal);
 
   boolean delete(Integer resultId, Principal principal);
+
+  Page<Result> fetchResultsWithUserEmail(Pageable pageable, String userEmail);
 
   Page<Result> getHistory(Pageable pageable, Principal principal);
 
