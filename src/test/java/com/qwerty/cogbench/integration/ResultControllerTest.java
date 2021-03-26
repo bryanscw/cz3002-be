@@ -1,6 +1,6 @@
 package com.qwerty.cogbench.integration;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -8,9 +8,8 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.is;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
@@ -19,6 +18,7 @@ import com.qwerty.cogbench.mock.MockUserConfigs;
 import com.qwerty.cogbench.model.Result;
 import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.repository.ResultRepository;
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -165,15 +165,15 @@ public class ResultControllerTest {
     String resultJson = new ObjectMapper().writeValueAsString(this.result);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/create")
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/create")
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken)
             .content(resultJson))
         .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
+        .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+        .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+        .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -194,17 +194,17 @@ public class ResultControllerTest {
   @Test
   public void should_notGetPatients_ifNotAuthorized() throws Exception {
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/patients")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .with(user("candidate1@test.com")))
-            .andExpect(status().isForbidden())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())
-                    )
-            );
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/patients")
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(user("candidate1@test.com")))
+        .andExpect(status().isForbidden())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())
+            )
+        );
   }
 
   @Order(4)
@@ -212,54 +212,54 @@ public class ResultControllerTest {
   public void should_getPatients_ifAuthorized() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/patients")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].email", is(this.user.getEmail())))
-            .andExpect(jsonPath("$[0].role", is(this.user.getRole())))
-            .andExpect(jsonPath("$[0].name", is(this.user.getName())))
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/patients")
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].email", is(this.user.getEmail())))
+        .andExpect(jsonPath("$[0].role", is(this.user.getRole())))
+        .andExpect(jsonPath("$[0].name", is(this.user.getName())))
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(5)
   @Test
   public void should_notGetAPatientsResults_ifNotAuthorized() throws Exception {
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/patients/" + this.user.getEmail())
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .with(user("candidate1@test.com")))
-            .andExpect(status().isForbidden())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())
-                    )
-            );
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/patients/" + this.user.getEmail())
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(user("candidate1@test.com")))
+        .andExpect(status().isForbidden())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())
+            )
+        );
   }
 
   @Order(6)
@@ -267,58 +267,58 @@ public class ResultControllerTest {
   public void should_getAPatientsResults_ifAuthorized() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/patients/" + this.user.getEmail())
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$[0].createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$[0].lastModifiedBy", is(getPersistentResult().getLastModifiedBy())))
-            .andExpect(jsonPath("$[0].user.email", is(getPersistentResult().getUser().getEmail())))
-            .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
-            .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
-            .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/patients/" + this.user.getEmail())
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].id", is(getPersistentResult().getId())))
+        .andExpect(jsonPath("$[0].createdBy", is(getPersistentResult().getCreatedBy())))
+        .andExpect(jsonPath("$[0].lastModifiedBy", is(getPersistentResult().getLastModifiedBy())))
+        .andExpect(jsonPath("$[0].user.email", is(getPersistentResult().getUser().getEmail())))
+        .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
+        .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
+        .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(7)
   @Test
   public void should_notGetAResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    CONTEXT_PATH + "/result/" + getPersistentResult().getId())
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .with(user("candidate1@test.com")))
-            .andExpect(status().isForbidden())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())
-                    )
-            );
+        MockMvcRequestBuilders.post(
+            CONTEXT_PATH + "/result/" + getPersistentResult().getId())
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(user("candidate1@test.com")))
+        .andExpect(status().isForbidden())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())
+            )
+        );
   }
 
   @Order(8)
@@ -326,37 +326,37 @@ public class ResultControllerTest {
   public void should_getAResult_ifAuthorized() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    CONTEXT_PATH + "/result/" + getPersistentResult().getId())
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            CONTEXT_PATH + "/result/" + getPersistentResult().getId())
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+        .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+        .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(9)
@@ -401,9 +401,9 @@ public class ResultControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
+        .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+        .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+        .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -451,13 +451,13 @@ public class ResultControllerTest {
             .contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_JSON)
             .header("Authorization", "Bearer " + accessToken))
-            .andExpect(jsonPath("$[0].id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$[0].createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$[0].lastModifiedBy", is(getPersistentResult().getLastModifiedBy())))
-            .andExpect(jsonPath("$[0].user.email", is(getPersistentResult().getUser().getEmail())))
-            .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
-            .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
-            .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
+        .andExpect(jsonPath("$[0].id", is(getPersistentResult().getId())))
+        .andExpect(jsonPath("$[0].createdBy", is(getPersistentResult().getCreatedBy())))
+        .andExpect(jsonPath("$[0].lastModifiedBy", is(getPersistentResult().getLastModifiedBy())))
+        .andExpect(jsonPath("$[0].user.email", is(getPersistentResult().getUser().getEmail())))
+        .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
+        .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
+        .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -505,13 +505,13 @@ public class ResultControllerTest {
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$[0].createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$[0].lastModifiedBy", is(getPersistentResult().getLastModifiedBy())))
-            .andExpect(jsonPath("$[0].user.email", is(getPersistentResult().getUser().getEmail())))
-            .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
-            .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
-            .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
+        .andExpect(jsonPath("$[0].id", is(getPersistentResult().getId())))
+        .andExpect(jsonPath("$[0].createdBy", is(getPersistentResult().getCreatedBy())))
+        .andExpect(jsonPath("$[0].lastModifiedBy", is(getPersistentResult().getLastModifiedBy())))
+        .andExpect(jsonPath("$[0].user.email", is(getPersistentResult().getUser().getEmail())))
+        .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
+        .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
+        .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
@@ -528,14 +528,15 @@ public class ResultControllerTest {
     // Create user
     String resultJson = new ObjectMapper().writeValueAsString(this.result);
     mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/update/" + getPersistentResult().getId())
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(resultJson))
-            .andExpect(status().isUnauthorized())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders
+            .post(CONTEXT_PATH + "/result/update/" + getPersistentResult().getId())
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(resultJson))
+        .andExpect(status().isUnauthorized())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
   }
 
   @Order(16)
@@ -543,18 +544,18 @@ public class ResultControllerTest {
   public void should_updateResultNodeNum_ifDoctor() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     this.result.setNodeNum(10);
 
@@ -562,24 +563,24 @@ public class ResultControllerTest {
     String resultJson = new ObjectMapper().writeValueAsString(this.result);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .content(resultJson))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken)
+            .content(resultJson))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+        .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+        .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
 
     // Check if data in `Result` object is persisted into the database
     Result persistentResult = getPersistentResult();
@@ -593,18 +594,18 @@ public class ResultControllerTest {
   public void should_updateResultTimeAndAccuracy_ifPatient() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.user.getEmail())
-                    .param("password", this.user.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.user.getEmail())
+            .param("password", this.user.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     this.result.setAccuracy(45.1);
     this.result.setTime(99.1);
@@ -613,24 +614,24 @@ public class ResultControllerTest {
     String resultJson = new ObjectMapper().writeValueAsString(this.result);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .content(resultJson))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken)
+            .content(resultJson))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
+        .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
+        .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
 
     // Check if data in `Result` object is persisted into the database
     Result persistentResult = getPersistentResult();
@@ -641,42 +642,43 @@ public class ResultControllerTest {
 
   @Order(18)
   @Test
-  public void should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull() throws Exception {
+  public void should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull()
+      throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.doctor.getEmail())
+            .param("password", this.doctor.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     this.result.setNodeNum(45);
     // Create user
     String resultJson = new ObjectMapper().writeValueAsString(this.result);
 
     mockMvc.perform(
-            MockMvcRequestBuilders.post(
-                    String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .content(resultJson))
-            .andExpect(status().isForbidden())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.post(
+            String.format(CONTEXT_PATH + "/result/update/%s", getPersistentResult().getId()))
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken)
+            .content(resultJson))
+        .andExpect(status().isForbidden())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(19)
@@ -684,16 +686,16 @@ public class ResultControllerTest {
   public void should_notGetTimeGraphData_ifNotAuthorized() throws Exception {
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/graph/time")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .param("bins", "10")
-                    .param("nodeNum", "25"))
-            .andExpect(status().isUnauthorized())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/graph/time")
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("bins", "10")
+            .param("nodeNum", "25"))
+        .andExpect(status().isUnauthorized())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
   }
 
   @Order(20)
@@ -701,16 +703,16 @@ public class ResultControllerTest {
   public void should_notGetTimeGraphData_ifInvalidParam() throws Exception {
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/graph/time")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .param("bins", "none")
-                    .param("nodeNum", "25"))
-            .andExpect(status().isBadRequest())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/graph/time")
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("bins", "none")
+            .param("nodeNum", "25"))
+        .andExpect(status().isBadRequest())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
   }
 
   @Order(21)
@@ -718,38 +720,38 @@ public class ResultControllerTest {
   public void should_getTimeGraphData_ifAuthorized() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.user.getEmail())
-                    .param("password", this.user.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.user.getEmail())
+            .param("password", this.user.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/graph/time")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .param("bins", "10")
-                    .param("nodeNum", "25"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.labels").isNotEmpty())
-            .andExpect(jsonPath("$.data").isNotEmpty())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/graph/time")
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken)
+            .param("bins", "10")
+            .param("nodeNum", "25"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.labels").value(IsNull.nullValue()))
+        .andExpect(jsonPath("$.data").value(IsNull.nullValue()))
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(22)
@@ -757,16 +759,16 @@ public class ResultControllerTest {
   public void should_notGetAccuracyGraphData_ifNotAuthorized() throws Exception {
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/graph/accuracy")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .param("bins", "10")
-                    .param("nodeNum", "25"))
-            .andExpect(status().isUnauthorized())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/graph/accuracy")
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("bins", "10")
+            .param("nodeNum", "25"))
+        .andExpect(status().isUnauthorized())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
   }
 
   @Order(23)
@@ -774,16 +776,16 @@ public class ResultControllerTest {
   public void should_notGetAccuracyGraphData_ifInvalidParam() throws Exception {
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/graph/accuracy")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .param("bins", "none")
-                    .param("nodeNum", "25"))
-            .andExpect(status().isBadRequest())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/graph/accuracy")
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .param("bins", "none")
+            .param("nodeNum", "25"))
+        .andExpect(status().isBadRequest())
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
   }
 
   @Order(24)
@@ -791,38 +793,38 @@ public class ResultControllerTest {
   public void should_getAccuracyGraphData_ifAuthorized() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.user.getEmail())
-                    .param("password", this.user.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
+        MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+            .header(HttpHeaders.AUTHORIZATION,
+                "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
+            .param("username", this.user.getEmail())
+            .param("password", this.user.getPass())
+            .param("grant_type", "password"))
+        .andExpect(status().isOk())
+        .andReturn();
 
     String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
+        .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
-                    CONTEXT_PATH + "/result/graph/accuracy")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .param("bins", "10")
-                    .param("nodeNum", "25"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.labels").isNotEmpty())
-            .andExpect(jsonPath("$.data").isNotEmpty())
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
+        MockMvcRequestBuilders.get(
+            CONTEXT_PATH + "/result/graph/accuracy")
+            .contextPath(CONTEXT_PATH)
+            .contentType(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken)
+            .param("bins", "10")
+            .param("nodeNum", "25"))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.labels").value(IsNull.nullValue()))
+        .andExpect(jsonPath("$.data").value(IsNull.nullValue()))
+        .andDo(document("{methodName}",
+            preprocessRequest(prettyPrint()),
+            preprocessResponse(prettyPrint())));
 
     mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
+        MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
+            .accept(MediaType.APPLICATION_JSON)
+            .header("Authorization", "Bearer " + accessToken));
   }
 
   @Order(25)
