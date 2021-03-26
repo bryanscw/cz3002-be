@@ -19,9 +19,9 @@ public interface ResultRepository extends JpaRepository<Result, Integer> {
     Optional<List<Result>> findAllResultByUserEmail(String email, List<Result> list);
 
     @Query(value="SELECT r.accuracy FROM result r WHERE r.node_num = ?1", nativeQuery= true)
-    List<Double> findAllAccuracyByNodeNum(Integer nodeNum);
+    List<Double> findAccuracyByNodeNum(Integer nodeNum);
 
     @Query(value="SELECT r.time FROM result r WHERE r.node_num = ?1", nativeQuery= true)
-    List<Double> findAllTimeByNodeNum(Integer nodeNum);
+    List<Double> findTimeByNodeNum(Integer nodeNum);
 
 }

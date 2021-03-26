@@ -82,14 +82,12 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public List<User> fetchAll() {
-    return (List<User>) userRepository.findAll();
+    return userRepository.findAll();
   }
 
   @Override
   public List<User> fetchAllPatients(List<User> list, String role) {
-    return userRepository.findAllByRole(list, role).orElseThrow(
-          () -> new ResourceNotFoundException(
-                  String.format("Users with role [%s] not found", role)));
+    return userRepository.findByRole(list, role);
   }
 
   /**

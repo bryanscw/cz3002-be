@@ -52,7 +52,7 @@ public class ResultServiceImpl implements ResultService {
 
   @Override
   public List<Result> fetchAll() {
-    return (List<Result>) resultRepository.findAll();
+    return resultRepository.findAll();
   }
 
   @Override
@@ -175,13 +175,13 @@ public class ResultServiceImpl implements ResultService {
 
   @Override
   public ResultDistriDto getAccuracyGraphData(Integer bins, Integer nodeNum) {
-    List<Double> accuracies = resultRepository.findAllAccuracyByNodeNum(nodeNum);
+    List<Double> accuracies = resultRepository.findAccuracyByNodeNum(nodeNum);
     return buildResultDtriDto(accuracies, bins);
   }
 
   @Override
   public ResultDistriDto getTimeGraphData(Integer bins, Integer nodeNum) {
-    List<Double> times = resultRepository.findAllTimeByNodeNum(nodeNum);
+    List<Double> times = resultRepository.findTimeByNodeNum(nodeNum);
     return buildResultDtriDto(times, bins);
   }
 }
