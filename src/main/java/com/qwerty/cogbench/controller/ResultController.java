@@ -138,6 +138,24 @@ public class ResultController {
    * Update result.
    *
    * @param resultId Id of result to update
+   * @param principal Principal context containing information of the user submitting the request
+   * @return Created result
+   */
+  @RequestMapping(method = RequestMethod.POST, path = "/{resultId}")
+  @Secured({"ROLE_DOCTOR"})
+  @ResponseStatus(HttpStatus.OK)
+  public Result fetchResult(
+          @PathVariable(value = "resultId") Integer resultId,
+          Principal principal
+  ) {
+    log.info("Fetching result with Id [{}] for user with Id [{}]", resultId, principal.getName());
+    return resultService.fetch(resultId);
+  }
+
+  /**
+   * Update result.
+   *
+   * @param resultId Id of result to update
    * @param result Result to be created
    * @param principal Principal context containing information of the user submitting the request
    * @return Created result

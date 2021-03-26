@@ -89,6 +89,15 @@ public class ResultServiceImpl implements ResultService {
   }
 
   @Override
+  public Result fetch(Integer resultId){
+    return resultRepository.findResultById(resultId)
+            .orElseThrow(() -> {
+              String errorMsg = String.format("Result with Id [%s] not found", resultId);
+              log.error(errorMsg);
+              throw new ResourceNotFoundException(errorMsg);
+  }
+
+  @Override
   public Result update(Integer resultId, Result result, Principal principal) {
 
     User userToFind = userRepository.findUserByEmail(principal.getName()).orElseThrow(() -> {
