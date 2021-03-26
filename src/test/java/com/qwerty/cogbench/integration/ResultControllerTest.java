@@ -232,9 +232,9 @@ public class ResultControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", "Bearer " + accessToken))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].user.email", is(this.user.getEmail())))
-            .andExpect(jsonPath("$[0].user.role", is(this.user.getRole())))
-            .andExpect(jsonPath("$[0].user.name", is(this.user.getName())))
+            .andExpect(jsonPath("$[0].email", is(this.user.getEmail())))
+            .andExpect(jsonPath("$[0].role", is(this.user.getRole())))
+            .andExpect(jsonPath("$[0].name", is(this.user.getName())))
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
