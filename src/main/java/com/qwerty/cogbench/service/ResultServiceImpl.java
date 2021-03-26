@@ -176,12 +176,20 @@ public class ResultServiceImpl implements ResultService {
   @Override
   public ResultDistriDto getAccuracyGraphData(Integer bins, Integer nodeNum) {
     List<Double> accuracies = resultRepository.findAccuracyByNodeNum(nodeNum);
-    return buildResultDtriDto(accuracies, bins);
+    if (accuracies.size() > 0) {
+      return buildResultDtriDto(accuracies, bins);
+    } else {
+      return new ResultDistriDto();
+    }
   }
 
   @Override
   public ResultDistriDto getTimeGraphData(Integer bins, Integer nodeNum) {
     List<Double> times = resultRepository.findTimeByNodeNum(nodeNum);
-    return buildResultDtriDto(times, bins);
+    if (times.size() > 0) {
+      return buildResultDtriDto(times, bins);
+    } else {
+      return new ResultDistriDto();
+    }
   }
 }

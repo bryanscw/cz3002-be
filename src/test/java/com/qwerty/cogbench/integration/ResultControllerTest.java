@@ -308,7 +308,7 @@ public class ResultControllerTest {
   @Test
   public void should_notGetAResult_ifNotAuthorized() throws Exception {
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
+            MockMvcRequestBuilders.post(
                     CONTEXT_PATH + "/result/" + getPersistentResult().getId())
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -340,7 +340,7 @@ public class ResultControllerTest {
             .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
 
     mockMvc.perform(
-            MockMvcRequestBuilders.get(
+            MockMvcRequestBuilders.post(
                     CONTEXT_PATH + "/result/" + getPersistentResult().getId())
                     .contextPath(CONTEXT_PATH)
                     .contentType(MediaType.APPLICATION_JSON)
