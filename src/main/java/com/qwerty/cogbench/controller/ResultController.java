@@ -57,7 +57,7 @@ public class ResultController {
    * @param pageable Pagination context
    * @return Paginated result of all results
    */
-  @RequestMapping(method = RequestMethod.GET, path = "/patients/{userEmail}")
+  @RequestMapping(method = RequestMethod.GET, path = "/{userEmail}")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
   public Page<Result> fetchPatientResults(
