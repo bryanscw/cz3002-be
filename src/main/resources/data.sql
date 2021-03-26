@@ -8,7 +8,7 @@ INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('admi
 INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('patient1@test.com', '$2y$12$8YL9bJU/dqWCx9oTpVZRMewNPL6tj3.dw7SaPNFrSkSi1eC9gi4R6', 'ROLE_PATIENT', 'patient1', '1967-01-02', '1');
 
 -- Username: patient2@test.com, Password: patient02
-INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('patient2@test.com', '$2y$12$2cqRlVRcmeEW1wycgQfdIuGHJYv7dg2vyGx4fAUNNgzSJW0l9bbBa', 'ROLE_PATIENT', 'patient2', '1956-09-11', '0');
+INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('patient2@test.com', '$2y$12$hNkcTjlZyHtyCqBazIQyGOKsMtdTrHhNm9Zy9OJdnbki17opZdaIC', 'ROLE_PATIENT', 'patient2', '1956-09-11', '0');
 
 -- Username: doctor1@test.com, Password: doctor01
 INSERT INTO qwerty.app_user (email, pass, role, name, dob, gender) VALUES ('doctor1@test.com', '$2y$12$bz0DAPR/tl9g1RCM7Xcd1uRk22be4UUtcisBBmCuRSkbTBteP4/pW', 'ROLE_DOCTOR', 'doctor1', '1997-01-02', '1');
