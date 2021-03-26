@@ -58,6 +58,16 @@ public class ResultServiceImpl implements ResultService {
   }
 
   @Override
+  public Page<Result> fetchResultsWithUserEmail(Pageable pageable, String userEmail){
+    return resultRepository.findAllResultByUserEmail(userEmail, pageable)
+            .orElseThrow(() -> {
+              String errorMsg = String.format("User with email [%s] not found", userEmail);
+              log.error(errorMsg);
+              throw new ResourceNotFoundException(errorMsg);
+            });
+  }
+
+  @Override
   public Result create(Result result, Principal principal) {
 
     if (result.getUser().getEmail().equals(null)) {

@@ -17,6 +17,8 @@ public interface ResultService {
 
   boolean delete(Integer resultId, Principal principal);
 
+  Page<Result> fetchResultsWithUserEmail(Pageable pageable, String userEmail);
+
   Page<Result> getHistory(Pageable pageable, Principal principal);
 
   Page<Result> fetchAll(Pageable pageable);

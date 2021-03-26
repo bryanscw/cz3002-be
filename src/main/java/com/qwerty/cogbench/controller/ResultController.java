@@ -52,6 +52,23 @@ public class ResultController {
   }
 
   /**
+   * Fetch a user's results.
+   *
+   * @param pageable Pagination context
+   * @return Paginated result of all results
+   */
+  @RequestMapping(method = RequestMethod.GET, path = "/patients/{userEmail}")
+  @Secured({"ROLE_DOCTOR"})
+  @ResponseStatus(HttpStatus.OK)
+  public Page<Result> fetchPatient(
+          Pageable pageable,
+          @PathVariable(value = "userEmail") String userEmail) {
+    log.info("Fetching results of patient with Id [{}] with pagination context: [{}]",
+            userEmail, pageable.toString());
+    return resultService.fetchResultsWithUserEmail(pageable, userEmail);
+  }
+
+  /**
    * Fetch all user results.
    *
    * @param pageable Pagination context
