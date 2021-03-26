@@ -197,7 +197,9 @@ public class UserControllerTest {
         MockMvcRequestBuilders.get(CONTEXT_PATH + "/users/").contextPath(CONTEXT_PATH)
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.content", hasSize(1)))
+            .andExpect(jsonPath("$[0].email", is(this.user.getEmail())))
+            .andExpect(jsonPath("$[0].role", is(this.user.getRole())))
+            .andExpect(jsonPath("$[0].name", is(this.user.getName())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));

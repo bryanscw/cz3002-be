@@ -492,7 +492,13 @@ public class ResultControllerTest {
             .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
             .header("Authorization", "Bearer " + accessToken))
         .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content", hasSize(1)))
+            .andExpect(jsonPath("$[0].id", is(getPersistentResult().getId())))
+            .andExpect(jsonPath("$[0].createdBy", is(getPersistentResult().getCreatedBy())))
+            .andExpect(jsonPath("$[0].lastModifiedBy", is(getPersistentResult().getLastModifiedBy())))
+            .andExpect(jsonPath("$[0].user.email", is(getPersistentResult().getUser().getEmail())))
+            .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
+            .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
+            .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));

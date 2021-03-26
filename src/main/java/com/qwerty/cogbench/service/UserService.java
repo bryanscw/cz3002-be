@@ -14,7 +14,7 @@ public interface UserService {
 
   User get(String email);
 
-  Page<User> fetchAll(Pageable pageable);
+  Iterable<User> fetchAll();
 
   Page<User> fetchAllPatients(Pageable pageable, String role);
 

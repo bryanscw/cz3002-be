@@ -22,4 +22,4 @@ INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_
 INSERT INTO qwerty.result (id, created_by, created_date, last_modified_by, last_modified_date, accuracy, time, node_num, user_id) VALUES (4, 'doctor1@test.com', '2021-02-16 02:49:40.502000000', 'patient1@test.com', '2021-02-16 02:49:40.502000000', 99.2, 88.1, 18, 'patient1@test.com');
 
 
-INSERT INTO qwerty.diagnosis (id, created_by, created_date, last_modified_by, last_modified_date, description, label, user_id, result_id) VALUES (1, 'doctor2@test.com', '2021-02-16 02:54:29.079000000', 'doctor2@test.com', '2021-02-16 02:54:29.079000000', 'Sample Description', 'Sample Label', 'doctor2@test.com', 1);
+INSERT INTO qwerty.diagnosis (id, created_by, created_date, last_modified_by, last_modified_date, description, label, user_id, result_id) VALUES (1, 'doctor2@test.com', '2021-02-16 02:54:29.079000000', 'doctor2@test.com', '2021-02-16 02:54:29.079000000', 'Sample Description', 'High', 'doctor2@test.com', 1);
