@@ -4,10 +4,10 @@ import com.qwerty.cogbench.exception.ResourceAlreadyExistsException;
 import com.qwerty.cogbench.exception.ResourceNotFoundException;
 import com.qwerty.cogbench.model.User;
 import com.qwerty.cogbench.repository.UserRepository;
+
+import java.util.List;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -81,13 +81,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public Iterable<User> fetchAll() {
-    return userRepository.findAll();
+  public List<User> fetchAll() {
+    return (List<User>) userRepository.findAll();
   }
 
   @Override
-  public Page<User> fetchAllPatients(Pageable pageable, String role) {
-    return userRepository.findAllByRole(pageable, role).orElseThrow(
+  public List<User> fetchAllPatients(List<User> list, String role) {
+    return userRepository.findAllByRole(list, role).orElseThrow(
           () -> new ResourceNotFoundException(
                   String.format("Users with role [%s] not found", role)));
   }

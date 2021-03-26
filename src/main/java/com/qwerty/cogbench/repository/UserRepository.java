@@ -1,12 +1,10 @@
 package com.qwerty.cogbench.repository;
 
 import com.qwerty.cogbench.model.User;
-import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface UserRepository extends CrudRepository<User, String> {
 
@@ -14,6 +12,6 @@ public interface UserRepository extends CrudRepository<User, String> {
 
   boolean existsUserByEmail(String email);
 
-  Optional<Page<User>> findAllByRole(Pageable pageable, String role);
+  Optional<List<User>> findAllByRole(List<User> list, String role);
 
 }

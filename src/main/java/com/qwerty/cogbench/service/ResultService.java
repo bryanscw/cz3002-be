@@ -2,10 +2,9 @@ package com.qwerty.cogbench.service;
 
 import com.qwerty.cogbench.dto.ResultDistriDto;
 import com.qwerty.cogbench.model.Result;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.security.Principal;
+import java.util.List;
 
 public interface ResultService {
 
@@ -19,11 +18,11 @@ public interface ResultService {
 
   boolean delete(Integer resultId, Principal principal);
 
-  Page<Result> fetchResultsWithUserEmail(Pageable pageable, String userEmail);
+  List<Result> fetchResultsWithUserEmail(List<Result> list, String userEmail);
 
-  Page<Result> getHistory(Pageable pageable, Principal principal);
+  List<Result> getHistory(List<Result> list, Principal principal);
 
-  Iterable<Result> fetchAll();
+  List<Result> fetchAll();
 
   ResultDistriDto getAccuracyGraphData(Integer bins, Integer nodeNum);
 

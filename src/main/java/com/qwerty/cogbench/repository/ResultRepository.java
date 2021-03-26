@@ -2,11 +2,8 @@ package com.qwerty.cogbench.repository;
 
 import com.qwerty.cogbench.model.Result;
 import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -18,7 +15,7 @@ public interface ResultRepository extends CrudRepository<Result, Integer> {
 
     Optional<Result> findResultById(Integer id);
 
-    Optional<Page<Result>> findAllResultByUserEmail(String email, Pageable pageable);
+    Optional<List<Result>> findAllResultByUserEmail(String email, List<Result> list);
 
     @Query(value="SELECT r.accuracy FROM result r WHERE r.node_num = ?1", nativeQuery= true)
     List<Double> findAllAccuracyByNodeNum(Integer nodeNum);
