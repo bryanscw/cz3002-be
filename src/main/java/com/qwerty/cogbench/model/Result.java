@@ -44,4 +44,11 @@ public class Result extends Auditable<String> {
   @Setter
   private Integer nodeNum;
 
+  // Result is the non-owning side
+  @Getter
+  @Setter
+  @OneToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER, mappedBy = "result")
+  @JsonIdentityReference(alwaysAsId = true)
+  private Diagnosis diagnosis;
+
 }

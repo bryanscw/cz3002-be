@@ -32,6 +32,26 @@ public class ResultServiceImpl implements ResultService {
     this.userRepository = userRepository;
   }
 
+  private static ResultDistriDto buildResultDtriDto(List<Double> doubleList, Integer bins) {
+    final DoubleSummaryStatistics statistics = doubleList.stream().mapToDouble(x -> x)
+        .summaryStatistics();
+    final double max = statistics.getMax();
+    final double min = statistics.getMin();
+    final double binSize = (max - min) / bins;
+    final Histogram histogram = Histogram.from(doubleList);
+    final Map<Integer, Integer> frequencies = histogram.histogram(bins);
+
+    List<Integer> data = new ArrayList<>();
+    frequencies.forEach((key, value) -> data.add(value));
+
+    List<String> labels = new ArrayList<>();
+    for (int i = 0; i < bins; i++) {
+      labels.add(String.format("[%.2f,%.2f)", min + i * binSize, min + (i + 1) * binSize));
+    }
+
+    return new ResultDistriDto(labels, data);
+  }
+
   @Override
   public Page<Result> fetchAll(Pageable pageable) {
     return resultRepository.findAll(pageable);
@@ -40,17 +60,18 @@ public class ResultServiceImpl implements ResultService {
   @Override
   public Result create(Result result, Principal principal) {
 
-    if (result.getUser().getEmail().equals(null)){
+    if (result.getUser().getEmail().equals(null)) {
       String errorMsg = "User of result is empty";
       log.error(errorMsg);
       throw new ResourceNotFoundException(errorMsg);
     }
 
-    User userToFind = userRepository.findUserByEmail(result.getUser().getEmail()).orElseThrow(() -> {
-      String errorMsg = String.format("User with email [%s] not found", principal.getName());
-      log.error(errorMsg);
-      throw new ResourceNotFoundException(errorMsg);
-    });
+    User userToFind = userRepository.findUserByEmail(result.getUser().getEmail())
+        .orElseThrow(() -> {
+          String errorMsg = String.format("User with email [%s] not found", result.getUser().getEmail());
+          log.error(errorMsg);
+          throw new ResourceNotFoundException(errorMsg);
+        });
 
     result.setUser(userToFind);
 
@@ -72,24 +93,25 @@ public class ResultServiceImpl implements ResultService {
       throw new ResourceNotFoundException(errorMsg);
     });
 
-    if (resultToFind.getAccuracy() != null && resultToFind.getTime() != null){
+    if (resultToFind.getAccuracy() != null && resultToFind.getTime() != null) {
       String errorMsg = String.format("Result with Id [%s] cannot be updated", resultId);
       log.error(errorMsg);
       throw new ForbiddenException(errorMsg);
     }
 
-    if (userToFind.getRole().equals("ROLE_PATIENT") && !resultToFind.getUser().getEmail().equals(userToFind.getEmail())){
+    if (userToFind.getRole().equals("ROLE_PATIENT") && !resultToFind.getUser().getEmail()
+        .equals(userToFind.getEmail())) {
       String progressErrorMsg = String
-              .format("User with Id [%s] not authorized to update result for user with Id [%s]",
-                      resultToFind.getUser().getName(),
-                      userToFind.getName());
+          .format("User with Id [%s] not authorized to update result for user with Id [%s]",
+              resultToFind.getUser().getName(),
+              userToFind.getName());
       log.error(progressErrorMsg);
       throw new UnauthorizedException(progressErrorMsg);
     }
 
-    if (userToFind.getRole().equals("ROLE_DOCTOR")){
+    if (userToFind.getRole().equals("ROLE_DOCTOR")) {
       resultToFind.setNodeNum(result.getNodeNum());
-    } else{
+    } else {
       resultToFind.setAccuracy(result.getAccuracy());
       resultToFind.setTime(result.getTime());
     }
@@ -143,26 +165,5 @@ public class ResultServiceImpl implements ResultService {
   public ResultDistriDto getTimeGraphData(Integer bins, Integer nodeNum) {
     List<Double> times = resultRepository.findAllTimeByNodeNum(nodeNum);
     return buildResultDtriDto(times, bins);
-  }
-
-
-  private static ResultDistriDto buildResultDtriDto(List<Double> doubleList, Integer bins) {
-    final DoubleSummaryStatistics statistics = doubleList.stream().mapToDouble(x -> x)
-        .summaryStatistics();
-    final double max = statistics.getMax();
-    final double min = statistics.getMin();
-    final double binSize = (max - min) / bins;
-    final Histogram histogram = Histogram.from(doubleList);
-    final Map<Integer, Integer> frequencies = histogram.histogram(bins);
-
-    List<Integer> data = new ArrayList<>();
-    frequencies.forEach((key, value) -> data.add(value));
-
-    List<String> labels = new ArrayList<>();
-    for (int i = 0; i < bins; i++) {
-      labels.add(String.format("[%.2f,%.2f)", min + i * binSize, min + (i + 1) * binSize));
-    }
-
-    return new ResultDistriDto(labels, data);
   }
 }

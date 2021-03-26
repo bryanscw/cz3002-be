@@ -34,10 +34,12 @@ public class Diagnosis extends Auditable<String> {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
+  // Diagnosis is the owning side of this
+  // Owning side gets the join column
   @Getter
   @Setter
-  @OneToOne(cascade = {CascadeType.REFRESH},
-            fetch = FetchType.EAGER)
+  @OneToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
+  @JoinColumn(name = "result_id", referencedColumnName = "id")
   @JsonIdentityReference(alwaysAsId = true)
   private Result result;
 
