@@ -45,25 +45,23 @@ public class ResultController {
   @RequestMapping(method = RequestMethod.GET, path = "/patients")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public List<User> fetchAllPatients(List<User> list) {
+  public List<User> fetchAllPatients() {
     log.info("Fetching all patients");
-    return userService.fetchAllPatients(list, "ROLE_PATIENT");
+    return userService.fetchAllPatients("ROLE_PATIENT");
   }
 
   /**
    * Fetch a user's results.
    *
-   * @param list List context
    * @return Paginated result of all results
    */
   @RequestMapping(method = RequestMethod.GET, path = "/patients/{userEmail}")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
   public List<Result> fetchPatientResults(
-          List<Result> list,
           @PathVariable(value = "userEmail") String userEmail) {
     log.info("Fetching results of patient with Id [{}]", userEmail);
-    return resultService.fetchResultsWithUserEmail(list, userEmail);
+    return resultService.fetchResultsWithUserEmail(userEmail);
   }
 
   /**
@@ -98,7 +96,6 @@ public class ResultController {
   /**
    * Get result.
    *
-   * @param list List context
    * @param principal Principal context containing information of the user submitting the request
    * @return Result
    */
@@ -106,11 +103,10 @@ public class ResultController {
   @Secured({"ROLE_PATIENT"})
   @ResponseStatus(HttpStatus.OK)
   public List<Result> fetchAllUserResult(
-      List<Result> list,
       Principal principal
   ) {
     log.info("Getting all result for user [{}]", principal.getName());
-    return resultService.getHistory(list, principal);
+    return resultService.getHistory(principal);
   }
 
   /**

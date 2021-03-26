@@ -16,6 +16,6 @@ public interface UserService {
 
   List<User> fetchAll();
 
-  List<User> fetchAllPatients(List<User> list, String role);
+  List<User> fetchAllPatients(String role);
 
 }

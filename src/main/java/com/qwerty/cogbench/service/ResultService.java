@@ -18,9 +18,9 @@ public interface ResultService {
 
   boolean delete(Integer resultId, Principal principal);
 
-  List<Result> fetchResultsWithUserEmail(List<Result> list, String userEmail);
+  List<Result> fetchResultsWithUserEmail(String userEmail);
 
-  List<Result> getHistory(List<Result> list, Principal principal);
+  List<Result> getHistory(Principal principal);
 
   List<Result> fetchAll();
 

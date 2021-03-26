@@ -86,8 +86,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public List<User> fetchAllPatients(List<User> list, String role) {
-    return userRepository.findByRole(list, role);
+  public List<User> fetchAllPatients(String role) {
+    return userRepository.findByRole(role);
   }
 
   /**

@@ -56,8 +56,8 @@ public class ResultServiceImpl implements ResultService {
   }
 
   @Override
-  public List<Result> fetchResultsWithUserEmail(List<Result> list, String userEmail){
-    return resultRepository.findAllResultByUserEmail(userEmail, list)
+  public List<Result> fetchResultsWithUserEmail(String userEmail){
+    return resultRepository.findResultByUserEmail(userEmail)
             .orElseThrow(() -> {
               String errorMsg = String.format("User with email [%s] not found", userEmail);
               log.error(errorMsg);
@@ -147,9 +147,9 @@ public class ResultServiceImpl implements ResultService {
                 String.format("User with email [%s] not found", principal.getName())));
   }
 
-  public List<Result> getHistory(List<Result> list, Principal principal) {
+  public List<Result> getHistory(Principal principal) {
 
-    return resultRepository.findAllResultByUserEmail(principal.getName(), list).orElseThrow(
+    return resultRepository.findResultByUserEmail(principal.getName()).orElseThrow(
         () -> new ResourceNotFoundException(
             String.format("Results for user [%s] not found", principal.getName())));
   }
