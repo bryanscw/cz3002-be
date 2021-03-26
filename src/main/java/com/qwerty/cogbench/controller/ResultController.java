@@ -39,14 +39,14 @@ public class ResultController {
   /**
    * Fetch all user results.
    *
-   * @param list list context
+   * @param principal Principal context containing information of the user submitting the request
    * @return Listed result of all results
    */
   @RequestMapping(method = RequestMethod.GET, path = "/patients")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public List<User> fetchAllPatients() {
-    log.info("Fetching all patients");
+  public List<User> fetchAllPatients(Principal principal) {
+    log.info("Fetching all patients using user with Id [{}]", principal.getName());
     return userService.fetchAllPatients("ROLE_PATIENT");
   }
 
@@ -67,13 +67,14 @@ public class ResultController {
   /**
    * Fetch all user results.
    *
+   * @param principal Principal context containing information of the user submitting the request
    * @return Paginated result of all results
    */
   @RequestMapping(method = RequestMethod.GET, path = "/")
   @Secured({"ROLE_DOCTOR"})
   @ResponseStatus(HttpStatus.OK)
-  public List<Result> fetchAllResults() {
-    log.info("Fetching all results");
+  public List<Result> fetchAllResults(Principal principal) {
+    log.info("Fetching all results using user with Id [{}]", principal.getName());
     return resultService.fetchAll();
   }
 

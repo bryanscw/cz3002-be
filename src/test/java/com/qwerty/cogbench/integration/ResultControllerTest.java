@@ -232,13 +232,9 @@ public class ResultControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .header("Authorization", "Bearer " + accessToken))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$[0].createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$[0].lastModifiedBy", is(getPersistentResult().getLastModifiedBy())))
-            .andExpect(jsonPath("$[0].user.email", is(getPersistentResult().getUser().getEmail())))
-            .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
-            .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
-            .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
+            .andExpect(jsonPath("$[0].user.email", is(this.user.getEmail())))
+            .andExpect(jsonPath("$[0].user.role", is(this.user.getRole())))
+            .andExpect(jsonPath("$[0].user.name", is(this.user.getName())))
             .andDo(document("{methodName}",
                     preprocessRequest(prettyPrint()),
                     preprocessResponse(prettyPrint())));
@@ -462,7 +458,6 @@ public class ResultControllerTest {
             .andExpect(jsonPath("$[0].user.role", is(getPersistentResult().getUser().getRole())))
             .andExpect(jsonPath("$[0].user.name", is(getPersistentResult().getUser().getName())))
             .andExpect(jsonPath("$[0].nodeNum", is(getPersistentResult().getNodeNum())))
-            .andExpect(jsonPath("$.content", hasSize(1)))
         .andDo(document("{methodName}",
             preprocessRequest(prettyPrint()),
             preprocessResponse(prettyPrint())));
