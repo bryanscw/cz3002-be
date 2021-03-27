@@ -192,7 +192,7 @@ public class ResultControllerTest {
 
   @Order(3)
   @Test
-  public void should_notCreateResult_ifTimeAndAcuracyIsNull() throws Exception {
+  public void should_notCreateResult_ifTimeAndAccuracyIsNull() throws Exception {
 
     MvcResult mvcResult = this.mockMvc.perform(
             MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
