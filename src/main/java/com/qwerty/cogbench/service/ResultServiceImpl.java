@@ -117,7 +117,7 @@ public class ResultServiceImpl implements ResultService {
     if (userToFind.getRole().equals("ROLE_PATIENT") &&
             !resultToFind.getUser().getEmail().equals(userToFind.getEmail())){
       String errorMsg = String
-              .format("User with email [%s] not authorized to access resource for user with email [%s}",
+              .format("User with email [%s] not authorized to access resource for user with email [%s]",
               principal.getName(),
               resultToFind.getUser().getEmail());
       log.error(errorMsg);
