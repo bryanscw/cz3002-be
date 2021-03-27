@@ -85,7 +85,7 @@ public class ResultServiceImpl implements ResultService {
     if (resultToFind.isPresent()){
       Result latestResult = resultToFind.get();
       if (latestResult.getTime().isNaN() && latestResult.getAccuracy().isNaN()){
-        String errorMsg = String.format("Uncompleted result for user with email [%s] exists",
+        String errorMsg = String.format("Incomplete result for user with email [%s] exists",
                 latestResult.getUser().getEmail());
         log.error(errorMsg);
         throw new ForbiddenException(errorMsg);
