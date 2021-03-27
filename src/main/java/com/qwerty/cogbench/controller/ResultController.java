@@ -143,7 +143,7 @@ public class ResultController {
           Principal principal
   ) {
     log.info("Fetching result with Id [{}] for user with Id [{}]", resultId, principal.getName());
-    return resultService.fetch(resultId);
+    return resultService.fetch(resultId, principal);
   }
 
   /**

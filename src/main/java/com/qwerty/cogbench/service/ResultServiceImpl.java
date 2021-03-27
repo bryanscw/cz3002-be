@@ -87,13 +87,33 @@ public class ResultServiceImpl implements ResultService {
   }
 
   @Override
-  public Result fetch(Integer resultId) {
-    return resultRepository.findResultById(resultId)
+  public Result fetch(Integer resultId, Principal principal) {
+
+    Result resultToFind = resultRepository.findResultById(resultId)
             .orElseThrow(() -> {
               String errorMsg = String.format("Result with Id [%s] not found", resultId);
               log.error(errorMsg);
               throw new ResourceNotFoundException(errorMsg);
             });
+
+    User userToFind = userRepository.findUserByEmail(principal.getName())
+            .orElseThrow(() -> {
+              String errorMsg = String.format("User with email [%s] not found", principal.getName());
+              log.error(errorMsg);
+              throw new ResourceNotFoundException(errorMsg);
+            });
+
+    if (userToFind.getRole().equals("ROLE_PATIENT") &&
+            !resultToFind.getUser().getEmail().equals(userToFind.getEmail())){
+      String errorMsg = String
+              .format("User with email [%s] not authorized to access resource for user with email [%s}",
+              principal.getName(),
+              resultToFind.getUser().getEmail());
+      log.error(errorMsg);
+      throw new UnauthorizedException(errorMsg);
+    }
+
+    return resultToFind;
   }
 
   @Override

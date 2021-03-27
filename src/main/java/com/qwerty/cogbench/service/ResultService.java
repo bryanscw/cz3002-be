@@ -12,7 +12,7 @@ public interface ResultService {
 
   Result update(Integer resultId, Result result, Principal principal);
 
-  Result fetch(Integer resultId);
+  Result fetch(Integer resultId, Principal principal);
 
   Result getLatestResult(Principal principal);
 
