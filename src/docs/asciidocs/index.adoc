@@ -462,6 +462,26 @@ include::{snippets}/should_createResult_ifAuthorized/request-body.adoc[]
 .Response sample
 include::{snippets}/should_createResult_ifAuthorized/response-body.adoc[]
 
+=== Reject create user result if incomplete result exists
+
+.Request sample with curl
+include::{snippets}/should_notCreateResult_ifTimeAndAccuracyIsNull/curl-request.adoc[]
+
+.Request sample with http
+include::{snippets}/should_notCreateResult_ifTimeAndAccuracyIsNull/http-request.adoc[]
+
+.Request sample with httpie
+include::{snippets}/should_notCreateResult_ifTimeAndAccuracyIsNull/httpie-request.adoc[]
+
+.HTTP response
+include::{snippets}/should_notCreateResult_ifTimeAndAccuracyIsNull/http-response.adoc[]
+
+.Request sample
+include::{snippets}/should_notCreateResult_ifTimeAndAccuracyIsNull/request-body.adoc[]
+
+.Response sample
+include::{snippets}/should_notCreateResult_ifTimeAndAccuracyIsNull/response-body.adoc[]
+
 === Reject fetch all user's result if credentials are invalid
 
 .Request sample with curl

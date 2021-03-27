@@ -82,15 +82,14 @@ public class ResultServiceImpl implements ResultService {
     Optional<Result> resultToFind = resultRepository.
             findFirstByUserEmailOrderByLastModifiedDateDesc(result.getUser().getEmail());
 
-    if (resultToFind.isPresent()){
-      Result latestResult = resultToFind.get();
-      if (latestResult.getTime().isNaN() && latestResult.getAccuracy().isNaN()){
+    resultToFind.ifPresent(latestResult -> {
+      if (latestResult.getTime() == null && latestResult.getAccuracy() == null){
         String errorMsg = String.format("Incomplete result for user with email [%s] exists",
                 latestResult.getUser().getEmail());
         log.error(errorMsg);
         throw new ForbiddenException(errorMsg);
       }
-    }
+    });
 
     result.setUser(userToFind);
 
