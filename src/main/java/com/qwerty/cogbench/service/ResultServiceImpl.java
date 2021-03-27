@@ -10,10 +10,8 @@ import com.qwerty.cogbench.repository.ResultRepository;
 import com.qwerty.cogbench.repository.UserRepository;
 import com.qwerty.cogbench.util.Histogram;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +67,7 @@ public class ResultServiceImpl implements ResultService {
   public Result create(Result result, Principal principal) {
 
     if (result.getUser().getEmail().equals(null)) {
-      String errorMsg = "User of result is empty";
+      String errorMsg = "User of provided result is empty";
       log.error(errorMsg);
       throw new ResourceNotFoundException(errorMsg);
     }
@@ -81,19 +79,52 @@ public class ResultServiceImpl implements ResultService {
           throw new ResourceNotFoundException(errorMsg);
         });
 
+    Optional<Result> resultToFind = resultRepository.
+            findFirstByUserEmailOrderByLastModifiedDateDesc(result.getUser().getEmail());
+
+    if (resultToFind.isPresent()){
+      Result latestResult = resultToFind.get();
+      if (latestResult.getTime().isNaN() && latestResult.getAccuracy().isNaN()){
+        String errorMsg = String.format("Incomplete result for user with email [%s] exists",
+                latestResult.getUser().getEmail());
+        log.error(errorMsg);
+        throw new ForbiddenException(errorMsg);
+      }
+    }
+
     result.setUser(userToFind);
 
     return resultRepository.save(result);
   }
 
   @Override
-  public Result fetch(Integer resultId) {
-    return resultRepository.findResultById(resultId)
+  public Result fetch(Integer resultId, Principal principal) {
+
+    Result resultToFind = resultRepository.findResultById(resultId)
             .orElseThrow(() -> {
               String errorMsg = String.format("Result with Id [%s] not found", resultId);
               log.error(errorMsg);
               throw new ResourceNotFoundException(errorMsg);
             });
+
+    User userToFind = userRepository.findUserByEmail(principal.getName())
+            .orElseThrow(() -> {
+              String errorMsg = String.format("User with email [%s] not found", principal.getName());
+              log.error(errorMsg);
+              throw new ResourceNotFoundException(errorMsg);
+            });
+
+    if (userToFind.getRole().equals("ROLE_PATIENT") &&
+            !resultToFind.getUser().getEmail().equals(userToFind.getEmail())){
+      String errorMsg = String
+              .format("User with email [%s] not authorized to access resource for user with email [%s]",
+              principal.getName(),
+              resultToFind.getUser().getEmail());
+      log.error(errorMsg);
+      throw new UnauthorizedException(errorMsg);
+    }
+
+    return resultToFind;
   }
 
   @Override
