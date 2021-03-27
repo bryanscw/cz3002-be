@@ -190,7 +190,7 @@ public class ResultControllerTest {
     assertNotNull(persistentResult.getId());
   }
 
-  @Order(2)
+  @Order(3)
   @Test
   public void should_notCreateResult_ifTimeAndAcuracyIsNull() throws Exception {
 
