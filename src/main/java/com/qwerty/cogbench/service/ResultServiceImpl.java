@@ -10,10 +10,8 @@ import com.qwerty.cogbench.repository.ResultRepository;
 import com.qwerty.cogbench.repository.UserRepository;
 import com.qwerty.cogbench.util.Histogram;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -69,7 +67,7 @@ public class ResultServiceImpl implements ResultService {
   public Result create(Result result, Principal principal) {
 
     if (result.getUser().getEmail().equals(null)) {
-      String errorMsg = "User of result is empty";
+      String errorMsg = "User of provided result is empty";
       log.error(errorMsg);
       throw new ResourceNotFoundException(errorMsg);
     }
@@ -80,6 +78,19 @@ public class ResultServiceImpl implements ResultService {
           log.error(errorMsg);
           throw new ResourceNotFoundException(errorMsg);
         });
+
+    Optional<Result> resultToFind = resultRepository.
+            findFirstByUserEmailOrderByLastModifiedDateDesc(result.getUser().getEmail());
+
+    if (resultToFind.isPresent()){
+      Result latestResult = resultToFind.get();
+      if (latestResult.getTime().isNaN() && latestResult.getAccuracy().isNaN()){
+        String errorMsg = String.format("Uncompleted result for user with email [%s] exists",
+                latestResult.getUser().getEmail());
+        log.error(errorMsg);
+        throw new ForbiddenException(errorMsg);
+      }
+    }
 
     result.setUser(userToFind);
 
