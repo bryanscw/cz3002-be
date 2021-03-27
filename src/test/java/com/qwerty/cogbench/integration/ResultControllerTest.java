@@ -684,53 +684,6 @@ public class ResultControllerTest {
     assertNotNull(persistentResult.getId());
   }
 
-  @Order(2)
-  @Test
-  public void should_createResult_ifAuthorized() throws Exception {
-
-    MvcResult mvcResult = this.mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/oauth/token").contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION,
-                            "Basic " + Base64Utils.encodeToString("my-client:my-secret".getBytes()))
-                    .param("username", this.doctor.getEmail())
-                    .param("password", this.doctor.getPass())
-                    .param("grant_type", "password"))
-            .andExpect(status().isOk())
-            .andReturn();
-
-    String accessToken = JsonPath
-            .read(mvcResult.getResponse().getContentAsString(), "$.access_token");
-
-    // Create user
-    String resultJson = new ObjectMapper().writeValueAsString(this.result);
-
-    mockMvc.perform(
-            MockMvcRequestBuilders.post(CONTEXT_PATH + "/result/create")
-                    .contextPath(CONTEXT_PATH)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken)
-                    .content(resultJson))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(getPersistentResult().getId())))
-            .andExpect(jsonPath("$.createdBy", is(getPersistentResult().getCreatedBy())))
-            .andExpect(jsonPath("$.user.email", is(getPersistentResult().getUser().getEmail())))
-            .andDo(document("{methodName}",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint())));
-
-    mockMvc.perform(
-            MockMvcRequestBuilders.delete(CONTEXT_PATH + "/oauth/revoke").contextPath(CONTEXT_PATH)
-                    .accept(MediaType.APPLICATION_JSON)
-                    .header("Authorization", "Bearer " + accessToken));
-
-    // Check if data in `Result` object is persisted into the database
-    Result persistentResult = getPersistentResult();
-    assertEquals(persistentResult.getUser().getEmail(), this.user.getEmail());
-    assertEquals(persistentResult.getUser().getRole(), this.user.getRole());
-    assertNotNull(persistentResult.getId());
-  }
-
   @Order(18)
   @Test
   public void should_notUpdateResultNodeNum_ifDoctorAndResultTimeAndAccuracyNotNull()
