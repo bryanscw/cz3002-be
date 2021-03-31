@@ -141,7 +141,7 @@ public class ResultServiceImpl implements ResultService {
       throw new ResourceNotFoundException(errorMsg);
     });
 
-    if (resultToFind.getAccuracy() != null && resultToFind.getTime() != null) {
+    if (resultToFind.getAccuracy() != 0 && resultToFind.getTime() != 0) {
       String errorMsg = String.format("Result with Id [%s] cannot be updated", resultId);
       log.error(errorMsg);
       throw new ForbiddenException(errorMsg);
